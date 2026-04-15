@@ -473,7 +473,7 @@ body {
   background: var(--card-bg);
 }
 
-.it-dot.act { background: var(--day-fill); border-color: var(--day-fill); }
+.it-dot.act { background: #3678c2; border-color: #3678c2; }
 .it-dot.walk { background: transparent; border-style: dashed; width: 8px; height: 8px; }
 .it-dot.meander { background: var(--text-light); border-color: var(--text-light); }
 .it-dot.food { background: var(--you-color); border-color: var(--you-color); }
@@ -515,15 +515,22 @@ body {
 
 .it-card-header {
   display: flex;
-  align-items: center;
-  gap: 8px;
+  align-items: baseline;
+  gap: 5px;
   flex-wrap: wrap;
 }
 
 .it-title {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--text);
+}
+
+.it-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 2px;
 }
 
 .it-card.walk .it-title {
@@ -606,7 +613,7 @@ body {
 
 .it-option.opt-tentative {
   background: white;
-  border: 2px solid #6a9ec8;
+  border: 2px solid #7eaad4;
   border-radius: 5px;
   padding: 5px 8px;
   margin-bottom: 2px;
@@ -646,14 +653,14 @@ body {
   margin-left: auto;
 }
 
-/* ── Locked itinerary items: white card with bold dark blue border ── */
+/* ── Locked itinerary items: always blue, regardless of day ── */
 .itinerary-item.it-locked .it-card {
   background: white;
-  border: 3px solid var(--day-fill);
+  border: 3px solid #3678c2;
 }
 
 .itinerary-item.it-locked .it-title {
-  color: var(--day-fill);
+  color: #1e3a5f;
   font-weight: 700;
 }
 

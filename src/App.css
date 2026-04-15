@@ -640,6 +640,8 @@ body {
   font-size: 9px;
   color: var(--text-muted);
   margin-left: auto;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 /* ── Locked itinerary items: always blue, regardless of day ── */

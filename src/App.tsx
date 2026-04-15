@@ -72,7 +72,7 @@ function ScheduleGrid({ acts, day, hoveredActId, onHoverAct, onLeaveAct }: {
   acts: Act[];
   day: Day;
   hoveredActId: string | null;
-  onHoverAct: (id: string) => void;
+  onHoverAct: (id: string, scrollGrid?: boolean) => void;
   onLeaveAct: () => void;
 }) {
   const [rangeStart, rangeEnd] = DAY_RANGES[day];
@@ -149,7 +149,7 @@ function PickDot({ picked }: { picked?: string }) {
 function ItineraryItem({ block, hoveredActId, onHoverAct, onLeaveAct, acts }: {
   block: ItineraryBlock;
   hoveredActId: string | null;
-  onHoverAct: (id: string) => void;
+  onHoverAct: (id: string, scrollGrid?: boolean) => void;
   onLeaveAct: () => void;
   acts: Act[];
 }) {

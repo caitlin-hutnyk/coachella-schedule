@@ -314,7 +314,7 @@ export const fridayItinerary: ItineraryBlock[] = [
   {
     type: 'meander',
     title: 'Explore + Yuma vibes',
-    subtitle: 'Hang in Yuma for house/techno. Eat dinner 6-8 PM.',
+    subtitle: 'Hang in Yuma for house/techno. Eat by 8:30 — Levity at 9:15.',
     start: t(16, 50),
     end: t(21, 15),
     options: [
@@ -387,7 +387,7 @@ export const saturdayItinerary: ItineraryBlock[] = [
   {
     type: 'food',
     title: 'Eat + head to Main',
-    subtitle: 'Grab dinner, get a good spot for Strokes.',
+    subtitle: 'Grab dinner on the way. Eat by 8:30 — Strokes at 9.',
     start: t(19, 0),
     end: t(21, 0),
     options: [
@@ -430,25 +430,16 @@ export const saturdayItinerary: ItineraryBlock[] = [
 export const sundayItinerary: ItineraryBlock[] = [
   {
     type: 'meander',
-    title: 'Arrive + explore',
-    subtitle: 'Day 3 — take it easy. Yuma, wander, catch acts.',
+    title: 'Arrive + explore + eat',
+    subtitle: 'Day 3 — Yuma, wander, catch acts. Eat by 6 — FTP at 6:45.',
     start: t(15, 30),
-    end: t(17, 30),
+    end: t(18, 10),
     options: [
+      { actId: 'su-duke-dumont', name: 'Duke Dumont', stage: 'Sahara (6:10)', time: '6:10 PM', who: 'caitlin', tentative: true },
       { actId: 'su-jane-remover', name: 'Jane Remover', stage: 'Sonora (4:20)', time: '4:20 PM', who: 'both' },
       { actId: 'su-little-simz', name: 'Little Simz', stage: 'Mojave (4:25)', time: '4:25 PM', who: 'violet' },
       { actId: 'su-bunt', name: 'BUNT.', stage: 'Sahara (4:45)', time: '4:45 PM', who: 'both' },
       { actId: 'su-clipse', name: 'CLIPSE', stage: 'OT (5:15)', time: '5:15 PM', who: 'violet' },
-    ],
-  },
-  {
-    type: 'food',
-    title: 'Eat + head toward Sahara',
-    subtitle: 'Dinner before the evening run.',
-    start: t(17, 30),
-    end: t(18, 10),
-    options: [
-      { actId: 'su-duke-dumont', name: 'Duke Dumont', stage: 'Sahara (6:10)', time: '6:10 PM', who: 'caitlin', tentative: true },
     ],
   },
   {

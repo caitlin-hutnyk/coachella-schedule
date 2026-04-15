@@ -192,6 +192,14 @@ function ItineraryItem({ block, hoveredActId, onHoverAct, onLeaveAct, acts }: {
   const isMustSee = actData?.priority === 'must';
   const isLocked = actData?.locked && !isMustSee;
 
+  if (block.type === 'subheader') {
+    return (
+      <div className="itinerary-subheader">
+        <span>{block.title}</span>
+      </div>
+    );
+  }
+
   return (
     <div
       className={`itinerary-item ${block.type} ${isHighlighted ? 'it-highlighted' : ''} ${isMustSee ? 'it-must-see' : ''} ${isLocked ? 'it-locked' : ''}`}
@@ -216,50 +224,30 @@ function ItineraryItem({ block, hoveredActId, onHoverAct, onLeaveAct, acts }: {
               {block.type === 'act' && <span className="it-meta-text">{formatTime(block.start)}–{formatTime(block.end)}</span>}
             </div>
           )}
-          {block.subtitle && <div className="it-subtitle">{block.subtitle}</div>}
+          {block.subtitle && (
+            <div className="it-subtitle">
+              {block.subtitle.includes('\n')
+                ? block.subtitle.split('\n').map((line, i) => <div key={i} className="it-bullet">· {line}</div>)
+                : block.subtitle}
+            </div>
+          )}
           {block.note && <div className="it-note">{block.note}</div>}
-          {block.options && block.options.length > 0 && (() => {
-            const tentatives = block.options.filter(o => o.tentative);
-            const others = block.options.filter(o => !o.tentative);
-            return (
-              <div className="it-options">
-                {tentatives.length > 0 && (
-                  <>
-                    <div className="it-options-label">Probably:</div>
-                    {tentatives.map(opt => (
-                      <div
-                        key={opt.actId}
-                        className={`it-option opt-tentative ${hoveredActId === opt.actId ? 'opt-highlighted' : ''}`}
-                        onMouseEnter={(e) => { e.stopPropagation(); onHoverAct(opt.actId, true); }}
-                        onMouseLeave={(e) => { e.stopPropagation(); onLeaveAct(); }}
-                      >
-                        <PickDot picked={acts.find(a => a.id === opt.actId)?.picked} />
-                        <span className="opt-name">{opt.name}</span>
-                        <span className="opt-detail">{opt.stage}</span>
-                      </div>
-                    ))}
-                  </>
-                )}
-                {others.length > 0 && (
-                  <>
-                    <div className="it-options-label">{tentatives.length > 0 ? 'Or:' : 'Options:'}</div>
-                    {others.map(opt => (
-                      <div
-                        key={opt.actId}
-                        className={`it-option ${hoveredActId === opt.actId ? 'opt-highlighted' : ''}`}
-                        onMouseEnter={(e) => { e.stopPropagation(); onHoverAct(opt.actId, true); }}
-                        onMouseLeave={(e) => { e.stopPropagation(); onLeaveAct(); }}
-                      >
-                        <PickDot picked={acts.find(a => a.id === opt.actId)?.picked} />
-                        <span className="opt-name">{opt.name}</span>
-                        <span className="opt-detail">{opt.stage}</span>
-                      </div>
-                    ))}
-                  </>
-                )}
-              </div>
-            );
-          })()}
+          {block.options && block.options.length > 0 && (
+            <div className="it-options">
+              {block.options.map(opt => (
+                <div
+                  key={opt.actId}
+                  className={`it-option ${opt.tentative ? 'opt-tentative' : ''} ${hoveredActId === opt.actId ? 'opt-highlighted' : ''}`}
+                  onMouseEnter={(e) => { e.stopPropagation(); onHoverAct(opt.actId, true); }}
+                  onMouseLeave={(e) => { e.stopPropagation(); onLeaveAct(); }}
+                >
+                  <PickDot picked={acts.find(a => a.id === opt.actId)?.picked} />
+                  <span className="opt-name">{opt.name}</span>
+                  <span className="opt-detail">{opt.stage} · {opt.time}</span>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>

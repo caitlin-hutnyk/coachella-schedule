@@ -29,7 +29,7 @@ export interface Act {
 }
 
 export interface ItineraryBlock {
-  type: 'act' | 'meander' | 'walk' | 'gametime' | 'food';
+  type: 'act' | 'meander' | 'walk' | 'gametime' | 'food' | 'subheader';
   actId?: string;
   title: string;
   subtitle?: string;
@@ -286,9 +286,8 @@ export const sundayActs: Act[] = [
 // ============================================================
 export const fridayItinerary: ItineraryBlock[] = [
   {
-    type: 'meander',
-    title: 'Arrive + explore',
-    subtitle: 'Aim to arrive for Slayyyter at 3. Quick explore.',
+    type: 'subheader',
+    title: 'Aim to arrive for Slayyyter at 3. Quick explore.',
     start: t(14, 30),
     end: t(15, 0),
   },
@@ -313,18 +312,18 @@ export const fridayItinerary: ItineraryBlock[] = [
   },
   {
     type: 'meander',
-    title: 'Explore + Yuma vibes',
-    subtitle: 'Hang in Yuma for house/techno. Eat by 8:30 — Levity at 9:15.',
+    title: 'Explore + eat + Yuma',
+    subtitle: 'Hang in Yuma for house/techno\nEat by 8:30 — Levity at 9:15\nHead toward Sahara by 9',
     start: t(16, 50),
     end: t(21, 15),
     options: [
-      { actId: 'f-kettama', name: 'Kettama', stage: 'Yuma (6:15)', time: '6:15 PM', who: 'caitlin', tentative: true },
-      { actId: 'f-prospa', name: 'Prospa', stage: 'Yuma (7:30)', time: '7:30 PM', who: 'caitlin', tentative: true },
-      { actId: 'f-central-cee', name: 'Central Cee', stage: 'Mojave (5:30)', time: '5:30 PM', who: 'violet' },
-      { actId: 'f-ninajirachi', name: 'Ninajirachi', stage: 'Sonora (7:10)', time: '7:10 PM', who: 'caitlin' },
-      { actId: 'f-the-xx', name: 'The xx', stage: 'Main (7:00)', time: '7:00 PM', who: 'caitlin' },
-      { actId: 'f-marlon', name: 'Marlon Hoffstadt', stage: 'Sahara (6:15)', time: '6:15 PM', who: 'caitlin' },
-      { actId: 'f-katseye', name: 'KATSEYE', stage: 'Sahara (8:00)', time: '8:00 PM', who: 'both' },
+      { actId: 'f-central-cee', name: 'Central Cee', stage: 'Mojave', time: '5:30 PM', who: 'violet' },
+      { actId: 'f-kettama', name: 'Kettama', stage: 'Yuma', time: '6:15 PM', who: 'caitlin', tentative: true },
+      { actId: 'f-marlon', name: 'Marlon Hoffstadt', stage: 'Sahara', time: '6:15 PM', who: 'caitlin' },
+      { actId: 'f-the-xx', name: 'The xx', stage: 'Main', time: '7:00 PM', who: 'caitlin' },
+      { actId: 'f-ninajirachi', name: 'Ninajirachi', stage: 'Sonora', time: '7:10 PM', who: 'caitlin' },
+      { actId: 'f-prospa', name: 'Prospa', stage: 'Yuma', time: '7:30 PM', who: 'caitlin', tentative: true },
+      { actId: 'f-katseye', name: 'KATSEYE', stage: 'Sahara', time: '8:00 PM', who: 'both' },
     ],
   },
   {
@@ -365,13 +364,13 @@ export const saturdayItinerary: ItineraryBlock[] = [
   {
     type: 'meander',
     title: 'Arrive + explore',
-    subtitle: 'Light day — save energy. Hang in Yuma or explore.',
+    subtitle: 'Light day — save energy\nHang in Yuma or explore\nHead to Gobi by 5:45 for Geese',
     start: t(15, 0),
     end: t(18, 15),
     options: [
-      { actId: 's-riordan', name: 'Riordan', stage: 'Yuma (3:00)', time: '3:00 PM', who: 'caitlin' },
-      { actId: 's-royel-otis', name: 'Royel Otis', stage: 'Mojave (5:50)', time: '5:50 PM', who: 'both' },
-      { actId: 's-addison-rae', name: 'Addison Rae', stage: 'Main (5:25)', time: '5:25 PM', who: 'violet' },
+      { actId: 's-riordan', name: 'Riordan', stage: 'Yuma', time: '3:00 PM', who: 'caitlin' },
+      { actId: 's-addison-rae', name: 'Addison Rae', stage: 'Main', time: '5:25 PM', who: 'violet' },
+      { actId: 's-royel-otis', name: 'Royel Otis', stage: 'Mojave', time: '5:50 PM', who: 'both' },
     ],
   },
   {
@@ -387,12 +386,12 @@ export const saturdayItinerary: ItineraryBlock[] = [
   {
     type: 'food',
     title: 'Eat + head to Main',
-    subtitle: 'Grab dinner on the way. Eat by 8:30 — Strokes at 9.',
+    subtitle: 'Eat by 8:30 — Strokes at 9\nGet a good spot at Main',
     start: t(19, 0),
     end: t(21, 0),
     options: [
-      { actId: 's-giveon', name: 'GIVĒON', stage: 'Main (7:00)', time: '7:00 PM', who: 'violet' },
-      { actId: 's-sosa', name: 'SOSA', stage: 'Yuma (6:45)', time: '6:45 PM', who: 'caitlin' },
+      { actId: 's-sosa', name: 'SOSA', stage: 'Yuma', time: '6:45 PM', who: 'caitlin' },
+      { actId: 's-giveon', name: 'GIVĒON', stage: 'Main', time: '7:00 PM', who: 'violet' },
     ],
   },
   {
@@ -431,15 +430,15 @@ export const sundayItinerary: ItineraryBlock[] = [
   {
     type: 'meander',
     title: 'Arrive + explore + eat',
-    subtitle: 'Day 3 — Yuma, wander, catch acts. Eat by 6 — FTP at 6:45.',
+    subtitle: 'Day 3 — Yuma, wander, catch acts\nEat by 6 — FTP at 6:45\nHead toward Sahara/OT by 6',
     start: t(15, 30),
     end: t(18, 10),
     options: [
-      { actId: 'su-duke-dumont', name: 'Duke Dumont', stage: 'Sahara (6:10)', time: '6:10 PM', who: 'caitlin', tentative: true },
-      { actId: 'su-jane-remover', name: 'Jane Remover', stage: 'Sonora (4:20)', time: '4:20 PM', who: 'both' },
-      { actId: 'su-little-simz', name: 'Little Simz', stage: 'Mojave (4:25)', time: '4:25 PM', who: 'violet' },
-      { actId: 'su-bunt', name: 'BUNT.', stage: 'Sahara (4:45)', time: '4:45 PM', who: 'both' },
-      { actId: 'su-clipse', name: 'CLIPSE', stage: 'OT (5:15)', time: '5:15 PM', who: 'violet' },
+      { actId: 'su-jane-remover', name: 'Jane Remover', stage: 'Sonora', time: '4:20 PM', who: 'both' },
+      { actId: 'su-little-simz', name: 'Little Simz', stage: 'Mojave', time: '4:25 PM', who: 'violet' },
+      { actId: 'su-bunt', name: 'BUNT.', stage: 'Sahara', time: '4:45 PM', who: 'both' },
+      { actId: 'su-clipse', name: 'CLIPSE', stage: 'OT', time: '5:15 PM', who: 'violet' },
+      { actId: 'su-duke-dumont', name: 'Duke Dumont', stage: 'Sahara', time: '6:10 PM', who: 'caitlin', tentative: true },
     ],
   },
   {

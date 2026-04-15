@@ -674,6 +674,20 @@ body {
   font-weight: 700;
 }
 
+/* Subheader */
+.itinerary-subheader {
+  padding: 12px 20px 4px;
+  font-size: 12px;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.it-bullet {
+  font-size: 11px;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
 /* Itinerary hover */
 .itinerary-item.it-highlighted .it-card {
   border-color: var(--day-accent);

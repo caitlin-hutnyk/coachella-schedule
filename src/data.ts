@@ -422,7 +422,7 @@ export const saturdayItinerary: ItineraryBlock[] = [
     start: t(23, 35),
     end: t(24, 30),
     options: [
-      { actId: 's-armin-sat', name: 'Armin van Buuren x Adam Beyer', stage: 'Yuma', time: 'til 12:55 AM', who: 'caitlin' },
+      { actId: 's-armin-sat', name: 'Armin van Buuren x Adam Beyer', stage: 'Yuma', time: '11:00 PM', who: 'caitlin' },
       { actId: 's-justin-bieber', name: 'Justin Bieber', stage: 'Main', time: '11:25 PM', who: 'caitlin' },
     ],
   },

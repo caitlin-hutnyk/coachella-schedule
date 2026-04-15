@@ -31,12 +31,22 @@
   --day-tint: rgba(74, 144, 217, 0.06);
   --day-bg: linear-gradient(180deg, #c0d8f2 0%, #d4e2f0 20%, #e2e8ee 60%, #eae8e4 100%);
 }
-/* Saturday: warm orange-blue blend matching the poster sunset */
+/* Saturday: light blue top blending through lavender into warm peach/orange — like the poster sunset */
 .day-saturday {
   --day-accent: #c07848;
   --day-fill: #b06838;
   --day-tint: rgba(192, 120, 72, 0.05);
-  --day-bg: linear-gradient(180deg, #d8c8e0 0%, #e0c8c0 15%, #e8d4c4 35%, #e4dcd4 65%, #ece8e2 100%);
+  --day-bg:
+    linear-gradient(180deg,
+      #c4d8f0 0%,
+      #cdd0e8 12%,
+      #dcc8d8 25%,
+      #e4c8c4 38%,
+      #ecd0b8 50%,
+      #ecdccc 65%,
+      #eae4dc 80%,
+      #ece8e2 100%
+    );
 }
 /* Sunday: warm orange throughout */
 .day-sunday {

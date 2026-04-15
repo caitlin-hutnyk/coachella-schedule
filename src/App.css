@@ -153,7 +153,7 @@ body {
 .swatch.pick-you { background: var(--you-color); border-radius: 50%; width: 10px; height: 10px; }
 .swatch.pick-violet { background: var(--violet-color); border-radius: 50%; width: 10px; height: 10px; }
 .swatch.pick-both { background: var(--both-color); border-radius: 50%; width: 10px; height: 10px; box-shadow: 0 0 0 2px #b2e4ec; }
-.swatch.swatch-locked { background: var(--day-fill); border-radius: 3px; }
+.swatch.swatch-locked { background: #3678c2; border-radius: 3px; }
 .swatch.swatch-must { background: #d94545; border-radius: 3px; }
 .swatch.swatch-tentative { background: #b8d4f0; border: 2px solid #9ac0e6; border-radius: 3px; }
 .swatch.swatch-unpicked { background: #ece8e0; border: 1px solid #ddd5c8; }
@@ -350,8 +350,8 @@ body {
 
 /* ── LOCKED: day-colored fill, white text — the hero ── */
 .act-block.locked {
-  background: var(--day-fill);
-  border: 2px solid var(--day-fill);
+  background: #3678c2;
+  border: 2px solid #3678c2;
   z-index: 5;
   box-shadow: 0 1px 4px rgba(0,0,0,0.12);
 }
@@ -422,7 +422,7 @@ body {
 }
 
 .act-block.locked.highlighted {
-  box-shadow: 0 0 0 3px white, 0 0 0 5px var(--day-fill), 0 2px 8px rgba(0,0,0,0.15);
+  box-shadow: 0 0 0 3px white, 0 0 0 5px #3678c2, 0 2px 8px rgba(0,0,0,0.15);
 }
 
 .act-block.priority-must.locked.highlighted {

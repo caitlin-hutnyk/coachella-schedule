@@ -175,10 +175,11 @@ function ItineraryItem({ block, hoveredActId, onHoverAct, onLeaveAct, acts }: {
   const actData = block.actId ? acts.find(a => a.id === block.actId) : undefined;
 
   const isMustSee = actData?.priority === 'must';
+  const isLocked = actData?.locked && !isMustSee;
 
   return (
     <div
-      className={`itinerary-item ${block.type} ${isHighlighted ? 'it-highlighted' : ''} ${isMustSee ? 'it-must-see' : ''}`}
+      className={`itinerary-item ${block.type} ${isHighlighted ? 'it-highlighted' : ''} ${isMustSee ? 'it-must-see' : ''} ${isLocked ? 'it-locked' : ''}`}
       onMouseEnter={() => block.actId && onHoverAct(block.actId, true)}
       onMouseLeave={onLeaveAct}
     >

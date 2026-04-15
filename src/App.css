@@ -638,6 +638,17 @@ body {
   margin-left: auto;
 }
 
+/* ── Locked itinerary items: blue accent (matching grid) ── */
+.itinerary-item.it-locked .it-card {
+  background: #dce8f5;
+  border: 1px solid #b8d4f0;
+}
+
+.itinerary-item.it-locked .it-title {
+  color: #1e3a5f;
+  font-weight: 700;
+}
+
 /* ── Must-see itinerary items: red accent ── */
 .itinerary-item.it-must-see .it-dot.act {
   background: #d94545;

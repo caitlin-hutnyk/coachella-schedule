@@ -27,17 +27,17 @@
 .day-friday {
   --day-accent: #4a90d9;
   --day-fill: #3678c2;
-  --day-bg: linear-gradient(180deg, #dce8f5 0%, #f5f0e8 20%);
+  --day-bg: linear-gradient(180deg, #c8ddf5 0%, #dce8f5 15%, #eee9e2 50%, #f5f0e8 100%);
 }
 .day-saturday {
-  --day-accent: #c27a4a;
-  --day-fill: #b06838;
-  --day-bg: linear-gradient(180deg, #f5ddd0 0%, #f5f0e8 20%);
+  --day-accent: #5a9a8a;
+  --day-fill: #4a8878;
+  --day-bg: linear-gradient(180deg, #d0e0d8 0%, #c8dce0 15%, #e8e4dc 50%, #f5f0e8 100%);
 }
 .day-sunday {
-  --day-accent: #4a90d9;
-  --day-fill: #3678c2;
-  --day-bg: linear-gradient(180deg, #f0cfb8 0%, #f5f0e8 20%);
+  --day-accent: #c87a4a;
+  --day-fill: #b06838;
+  --day-bg: linear-gradient(180deg, #f0cfb8 0%, #ecdcc8 15%, #ede8e0 50%, #f5f0e8 100%);
 }
 
 html, body, #root { height: 100%; overflow: hidden; }
@@ -819,29 +819,16 @@ body {
   .it-note { font-size: 9px; }
 
   /* ── Grid: compact, horizontal scroll ── */
-  /* On mobile, header scrolls with the grid horizontally */
-  .grid-header {
-    display: none;
-  }
-  .grid-scroll {
-    position: relative;
-  }
-  .grid-scroll::before {
-    content: none;
-  }
-  .grid-body {
-    padding-top: 28px;
-    padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px));
-  }
+  .grid-header { display: none; }
+
   .grid-mobile-header {
     display: flex;
-    position: sticky;
-    top: 0;
-    z-index: 20;
     background: var(--card-bg);
     border-bottom: 1px solid var(--border);
-    margin-left: -36px;
-    padding-left: 36px;
+  }
+  .grid-mobile-header .grid-time-spacer {
+    width: 36px;
+    flex-shrink: 0;
   }
   .grid-mobile-header .grid-header-stage {
     min-width: 38vw;
@@ -854,6 +841,10 @@ body {
     font-weight: 600;
     text-transform: uppercase;
     color: var(--text-muted);
+  }
+
+  .grid-body {
+    padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px));
   }
   .grid-scroll {
     overflow-x: auto;

@@ -47,7 +47,7 @@ function ActBlock({ act, rangeStart, highlighted, dimmed, onHover, onLeave, hour
   const height = Math.max(((act.end - act.start) / 60) * hourPx - 2, hourPx < 50 ? 10 : 20);
 
   let pickClass = '';
-  if (act.picked === 'you') pickClass = 'pick-you';
+  if (act.picked === 'caitlin') pickClass = 'pick-you';
   else if (act.picked === 'violet') pickClass = 'pick-violet';
   else if (act.picked === 'both') pickClass = 'pick-both';
 
@@ -175,7 +175,8 @@ function ScheduleGrid({ acts, day, hoveredActId, onHoverAct, onLeaveAct }: {
 
 function PickDot({ picked }: { picked?: string }) {
   if (!picked) return null;
-  return <span className={`pick-indicator ${picked}`} title={picked === 'both' ? 'Both' : picked === 'you' ? 'You' : 'Violet'} />;
+  const cls = picked === 'caitlin' ? 'you' : picked;
+  return <span className={`pick-indicator ${cls}`} title={picked === 'both' ? 'Both' : picked === 'caitlin' ? 'Caitlin' : 'Violet'} />;
 }
 
 function ItineraryItem({ block, hoveredActId, onHoverAct, onLeaveAct, acts }: {
@@ -210,6 +211,7 @@ function ItineraryItem({ block, hoveredActId, onHoverAct, onLeaveAct, acts }: {
             {actData && <PickDot picked={actData.picked} />}
             <span className="it-title">{block.title}</span>
             {block.stage && <span className="it-stage">{block.stage}</span>}
+            {block.type === 'act' && <span className="it-timerange">{formatTime(block.start)}-{formatTime(block.end)}</span>}
           </div>
           {block.subtitle && <div className="it-subtitle">{block.subtitle}</div>}
           {block.note && <div className="it-note">{block.note}</div>}
@@ -291,7 +293,6 @@ export default function App() {
           <div className="header-brand">COACHELLA</div>
           {/* Desktop: info + map button */}
           <div className="header-info desktop-only">
-            <span className="header-weekend">Weekend 2</span>
             <span className="header-day">{DAY_LABELS[day]}</span>
             <button className="map-btn" onClick={() => setShowMap(true)}>Map</button>
           </div>
@@ -316,7 +317,7 @@ export default function App() {
       </header>
 
       <div className="legend-bar desktop-only">
-        <span className="legend-item"><span className="swatch pick-you" /> You</span>
+        <span className="legend-item"><span className="swatch pick-you" /> Caitlin</span>
         <span className="legend-item"><span className="swatch pick-violet" /> Violet</span>
         <span className="legend-item"><span className="swatch pick-both" /> Both</span>
         <span className="legend-item"><span className="swatch swatch-locked" /> Locked in</span>

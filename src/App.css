@@ -553,6 +553,14 @@ body {
 .it-who.you { background: var(--you-color); }
 .it-who.violet { background: var(--violet-color); }
 
+.it-timerange {
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-left: auto;
+  white-space: nowrap;
+  font-weight: 500;
+}
+
 .it-subtitle {
   font-size: 11px;
   color: var(--text-muted);

@@ -288,8 +288,8 @@ export const fridayItinerary: ItineraryBlock[] = [
   {
     type: 'meander',
     title: 'Arrive + explore',
-    subtitle: 'Day 1 — get bearings, find food, see art, locate stages',
-    start: t(13, 0),
+    subtitle: 'Aim to arrive for Slayyyter at 3. Quick explore.',
+    start: t(14, 30),
     end: t(15, 0),
   },
   {

@@ -365,20 +365,20 @@ body {
   color: rgba(255,255,255,0.65);
 }
 
-/* ── TENTATIVE: solid light blue — planned but flexible ── */
+/* ── TENTATIVE: faded blue — planned but flexible ── */
 .act-block.tentative {
-  background: #b8d4f0;
-  border: 2px solid #9ac0e6;
+  background: #dce8f4;
+  border: 1px solid #b8cce0;
   z-index: 4;
 }
 
 .act-block.tentative .act-name {
-  color: #1e3a5f;
-  font-weight: 600;
+  color: #5a7a9a;
+  font-weight: 500;
 }
 
 .act-block.tentative .act-time-label {
-  color: #4a7aaa;
+  color: #8aa4be;
 }
 
 /* ── MUST-SEE + LOCKED: distinct warm coral fill ── */

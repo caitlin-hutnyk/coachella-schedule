@@ -351,11 +351,11 @@ export const fridayItinerary: ItineraryBlock[] = [
     start: t(22, 35),
     end: t(25, 0),
     options: [
-      { actId: 'f-disclosure', name: 'Disclosure', stage: 'OT (10:40)', time: '10:40 PM', who: 'caitlin', tentative: true },
-      { actId: 'f-anyma', name: 'Anyma', stage: 'Main (12:00)', time: '12:00 AM', who: 'caitlin', tentative: true },
-      { actId: 'f-ethel-cain', name: 'Ethel Cain', stage: 'Mojave (10:45)', time: '10:45 PM', who: 'violet' },
-      { actId: 'f-sexyy-red', name: 'Sexyy Red', stage: 'Sahara (12:05)', time: '12:05 AM', who: 'violet' },
-      { actId: 'f-blood-orange', name: 'Blood Orange', stage: 'Mojave (12:00)', time: '12:00 AM', who: 'caitlin' },
+      { actId: 'f-disclosure', name: 'Disclosure', stage: 'OT', time: '10:40 PM', who: 'caitlin', tentative: true },
+      { actId: 'f-ethel-cain', name: 'Ethel Cain', stage: 'Mojave', time: '10:45 PM', who: 'violet' },
+      { actId: 'f-anyma', name: 'Anyma', stage: 'Main', time: '12:00 AM', who: 'caitlin', tentative: true },
+      { actId: 'f-blood-orange', name: 'Blood Orange', stage: 'Mojave', time: '12:00 AM', who: 'caitlin' },
+      { actId: 'f-sexyy-red', name: 'Sexyy Red', stage: 'Sahara', time: '12:05 AM', who: 'violet' },
     ],
   },
 ];

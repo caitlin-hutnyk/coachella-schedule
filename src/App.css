@@ -365,21 +365,21 @@ body {
   color: rgba(255,255,255,0.65);
 }
 
-/* ── TENTATIVE: white card + blue left stripe — like picked, but blue ── */
+/* ── TENTATIVE: light blue fill — softer version of locked ── */
 .act-block.tentative {
-  background: white;
-  border: 1px solid #c8d8e8;
-  border-left: 3px solid #7aaed4;
+  background: #c8ddf0;
+  border: 1px solid #a8c4dc;
+  border-left: 3px solid #6aa0cc;
   z-index: 4;
 }
 
 .act-block.tentative .act-name {
-  color: var(--text);
-  font-weight: 500;
+  color: #2c4a68;
+  font-weight: 600;
 }
 
 .act-block.tentative .act-time-label {
-  color: var(--text-muted);
+  color: #5a88aa;
 }
 
 /* ── MUST-SEE + LOCKED: distinct warm coral fill ── */

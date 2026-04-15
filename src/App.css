@@ -181,7 +181,7 @@ body {
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
-  background: rgba(255, 253, 248, 0.85);
+  background: transparent;
   overflow: hidden;
 }
 
@@ -597,8 +597,8 @@ body {
 }
 
 .it-option.opt-tentative {
-  background: #dce8f5;
-  border: 1px solid #b8d4f0;
+  background: #d0e0f2;
+  border: 2px solid #8fb8dc;
   border-radius: 5px;
   padding: 5px 8px;
   margin-bottom: 2px;
@@ -638,14 +638,14 @@ body {
   margin-left: auto;
 }
 
-/* ── Locked itinerary items: blue accent (matching grid) ── */
+/* ── Locked itinerary items: bold blue card ── */
 .itinerary-item.it-locked .it-card {
-  background: #dce8f5;
-  border: 1px solid #b8d4f0;
+  background: #c4d6ee;
+  border: 2px solid #7eaad4;
 }
 
 .itinerary-item.it-locked .it-title {
-  color: #1e3a5f;
+  color: #1a3358;
   font-weight: 700;
 }
 

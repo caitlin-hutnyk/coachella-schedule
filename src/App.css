@@ -13,7 +13,7 @@
   /* Pick stripe/dot colors */
   --you-color: #e8944a;
   --violet-color: #e07aaa;
-  --both-color: #8a74cc;
+  --both-color: #a898d4;
 
   /* Must-see ring */
   --must-ring: #dc2626;
@@ -339,9 +339,9 @@ body {
 }
 
 .act-block.pick-both:not(.locked):not(.tentative) {
-  background: #f4f0fa;
-  border: 1px solid #c8bee0;
-  border-left: 4px solid var(--both-color);
+  background: white;
+  border: 1px solid #d8d0e0;
+  border-left: 3px solid var(--both-color);
 }
 .act-block.pick-both:not(.locked):not(.tentative) .act-name {
   color: var(--text);

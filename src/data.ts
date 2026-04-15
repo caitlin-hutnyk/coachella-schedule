@@ -368,6 +368,7 @@ export const saturdayItinerary: ItineraryBlock[] = [
     start: t(15, 0),
     end: t(18, 15),
     options: [
+      { actId: 's-kacey', name: 'Kacey Musgraves', stage: 'Mojave', time: '3:00 PM', who: 'violet' },
       { actId: 's-riordan', name: 'Riordan', stage: 'Yuma', time: '3:00 PM', who: 'caitlin' },
       { actId: 's-addison-rae', name: 'Addison Rae', stage: 'Main', time: '5:25 PM', who: 'violet' },
       { actId: 's-royel-otis', name: 'Royel Otis', stage: 'Mojave', time: '5:50 PM', who: 'both' },
@@ -392,6 +393,7 @@ export const saturdayItinerary: ItineraryBlock[] = [
     options: [
       { actId: 's-sosa', name: 'SOSA', stage: 'Yuma', time: '6:45 PM', who: 'caitlin' },
       { actId: 's-giveon', name: 'GIVĒON', stage: 'Main', time: '7:00 PM', who: 'violet' },
+      { actId: 's-nine-inch', name: 'Nine Inch Noize', stage: 'Sahara', time: '8:00 PM', who: 'caitlin' },
     ],
   },
   {

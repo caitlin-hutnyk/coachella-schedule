@@ -22,7 +22,7 @@ export interface Act {
   stage: Stage;
   start: number;
   end: number;
-  picked?: 'you' | 'violet' | 'both';
+  picked?: 'caitlin' | 'violet' | 'both';
   priority?: 'must' | 'want';
   locked?: boolean;
   tentative?: boolean;

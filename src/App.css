@@ -642,3 +642,126 @@ body {
 
 .grid-scroll::-webkit-scrollbar-thumb:hover,
 .itinerary-scroll::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+/* ════════════════════════════════════
+   MOBILE (<768px)
+   ════════════════════════════════════ */
+
+.mobile-bottom-nav { display: none; }
+
+@media (max-width: 767px) {
+  /* ── Header: compact ── */
+  .app-header { padding: 10px 16px 0; }
+  .header-top { margin-bottom: 6px; }
+  .header-brand { font-size: 18px; letter-spacing: 3px; }
+  .header-day { font-size: 15px; }
+  .header-weekend { font-size: 11px; }
+  .day-tab { padding: 6px 14px; font-size: 12px; letter-spacing: 1.5px; }
+
+  /* ── Legend: compact, wrap ── */
+  .legend-bar {
+    flex-wrap: wrap;
+    gap: 6px 10px;
+    padding: 6px 16px;
+    font-size: 10px;
+  }
+
+  /* ── Layout: stack, toggle panels ── */
+  .main-content { flex-direction: column; }
+  .divider { display: none; }
+
+  .grid-panel,
+  .schedule-panel {
+    width: 100%;
+    flex: 1;
+    display: none;
+    min-height: 0;
+  }
+
+  .grid-panel.mobile-active,
+  .schedule-panel.mobile-active {
+    display: flex;
+  }
+
+  /* ── Schedule panel: full width ── */
+  .schedule-panel-header { display: none; }
+  .schedule-panel.mobile-active { background: var(--card-bg); }
+  .itinerary-scroll { padding: 4px 0 20px; }
+  .itinerary-item { padding: 0 12px; }
+  .it-time-col { width: 54px; padding-right: 8px; }
+
+  /* ── Grid: horizontal scroll, ~2 stages visible ── */
+  .grid-header {
+    overflow: hidden;
+    min-width: max-content;
+  }
+  .grid-scroll {
+    overflow-x: auto;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .grid-time-spacer { width: 44px; }
+  .grid-body { margin-left: 44px; min-width: max-content; }
+  .time-axis { left: -44px; width: 44px; }
+  .time-marker { padding-right: 4px; }
+  .time-marker span { font-size: 9px; }
+
+  .grid-header-stage {
+    min-width: 46vw;
+    flex: none;
+    font-size: 9px;
+    padding: 6px 2px;
+  }
+  .stage-column {
+    min-width: 46vw;
+    flex: none;
+  }
+
+  /* Slightly taller rows for fat fingers */
+  .act-block { padding: 4px 5px; }
+  .act-block .act-name { font-size: 11px; }
+
+  /* ── Bottom nav ── */
+  .mobile-bottom-nav {
+    display: flex;
+    flex-shrink: 0;
+    border-top: 1px solid var(--border);
+    background: var(--card-bg);
+    padding: 6px 12px calc(6px + env(safe-area-inset-bottom));
+    gap: 8px;
+  }
+
+  .bottom-nav-btn {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    background: var(--bg);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .bottom-nav-btn.active {
+    background: var(--day-fill);
+    color: white;
+  }
+
+  /* ── Disable hover effects on touch ── */
+  .act-block.highlighted {
+    box-shadow: none;
+    z-index: 1;
+  }
+  .act-block.locked.highlighted {
+    box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+  }
+  .act-block.priority-must.locked.highlighted {
+    box-shadow: 0 1px 4px rgba(180,40,40,0.25);
+  }
+  .act-block.dimmed { opacity: 1; }
+  .act-block.locked.dimmed { opacity: 1; }
+}

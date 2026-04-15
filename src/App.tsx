@@ -84,9 +84,18 @@ function ScheduleGrid({ acts, day, hoveredActId, onHoverAct, onLeaveAct }: {
     hours.push(h);
   }
 
+  const headerRef = useRef<HTMLDivElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  const onGridScroll = useCallback(() => {
+    if (headerRef.current && scrollRef.current) {
+      headerRef.current.scrollLeft = scrollRef.current.scrollLeft;
+    }
+  }, []);
+
   return (
     <div className="schedule-grid">
-      <div className="grid-header">
+      <div className="grid-header" ref={headerRef}>
         <div className="grid-time-spacer" />
         {STAGES.map(stage => (
           <div key={stage} className="grid-header-stage">
@@ -94,7 +103,7 @@ function ScheduleGrid({ acts, day, hoveredActId, onHoverAct, onLeaveAct }: {
           </div>
         ))}
       </div>
-      <div className="grid-scroll">
+      <div className="grid-scroll" ref={scrollRef} onScroll={onGridScroll}>
         <div className="grid-body" style={{ height: `${gridHeight}px` }}>
           <div className="time-axis">
             {hours.map(h => (
@@ -229,6 +238,7 @@ function ItineraryItem({ block, hoveredActId, onHoverAct, onLeaveAct, acts }: {
 export default function App() {
   const [day, setDay] = useState<Day>('friday');
   const [hoveredActId, setHoveredActId] = useState<string | null>(null);
+  const [mobileView, setMobileView] = useState<'grid' | 'schedule'>('schedule');
   const gridRef = useRef<HTMLDivElement>(null);
 
   const onHoverAct = useCallback((id: string, scrollGrid?: boolean) => {
@@ -281,7 +291,7 @@ export default function App() {
       </div>
 
       <div className="main-content" ref={gridRef}>
-        <div className="grid-panel">
+        <div className={`grid-panel ${mobileView === 'grid' ? 'mobile-active' : ''}`}>
           <ScheduleGrid
             acts={acts}
             day={day}
@@ -291,7 +301,7 @@ export default function App() {
           />
         </div>
         <div className="divider" />
-        <div className="schedule-panel">
+        <div className={`schedule-panel ${mobileView === 'schedule' ? 'mobile-active' : ''}`}>
           <div className="schedule-panel-header">Our Schedule</div>
           <div className="itinerary-scroll">
             {itinerary.map((block, i) => (
@@ -307,6 +317,21 @@ export default function App() {
           </div>
         </div>
       </div>
+
+      <nav className="mobile-bottom-nav">
+        <button
+          className={`bottom-nav-btn ${mobileView === 'schedule' ? 'active' : ''}`}
+          onClick={() => setMobileView('schedule')}
+        >
+          Our Schedule
+        </button>
+        <button
+          className={`bottom-nav-btn ${mobileView === 'grid' ? 'active' : ''}`}
+          onClick={() => setMobileView('grid')}
+        >
+          Full Lineup
+        </button>
+      </nav>
     </div>
   );
 }

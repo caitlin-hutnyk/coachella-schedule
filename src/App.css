@@ -24,20 +24,26 @@
   --day-fill-hover: #2a6199;
 }
 
+/* Friday: cool blue throughout */
 .day-friday {
   --day-accent: #4a90d9;
   --day-fill: #3678c2;
-  --day-bg: linear-gradient(180deg, #c8ddf5 0%, #dce8f5 15%, #eee9e2 50%, #f5f0e8 100%);
+  --day-tint: rgba(74, 144, 217, 0.06);
+  --day-bg: linear-gradient(180deg, #c0d8f2 0%, #d4e2f0 20%, #e2e8ee 60%, #eae8e4 100%);
 }
+/* Saturday: warm orange-blue blend matching the poster sunset */
 .day-saturday {
-  --day-accent: #5a9a8a;
-  --day-fill: #4a8878;
-  --day-bg: linear-gradient(180deg, #d0e0d8 0%, #c8dce0 15%, #e8e4dc 50%, #f5f0e8 100%);
+  --day-accent: #c07848;
+  --day-fill: #b06838;
+  --day-tint: rgba(192, 120, 72, 0.05);
+  --day-bg: linear-gradient(180deg, #d8c8e0 0%, #e0c8c0 15%, #e8d4c4 35%, #e4dcd4 65%, #ece8e2 100%);
 }
+/* Sunday: warm orange throughout */
 .day-sunday {
   --day-accent: #c87a4a;
   --day-fill: #b06838;
-  --day-bg: linear-gradient(180deg, #f0cfb8 0%, #ecdcc8 15%, #ede8e0 50%, #f5f0e8 100%);
+  --day-tint: rgba(200, 122, 74, 0.06);
+  --day-bg: linear-gradient(180deg, #e8c4a8 0%, #edd0b8 20%, #ece0d0 60%, #ece8e2 100%);
 }
 
 html, body, #root { height: 100%; overflow: hidden; }
@@ -165,7 +171,7 @@ body {
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
-  background: var(--card-bg);
+  background: rgba(255, 253, 248, 0.85);
   overflow: hidden;
 }
 
@@ -198,7 +204,7 @@ body {
   display: flex;
   border-bottom: 1px solid var(--border);
   flex-shrink: 0;
-  background: var(--card-bg);
+  background: transparent;
 }
 
 .grid-time-spacer { width: 64px; flex-shrink: 0; }
@@ -212,7 +218,6 @@ body {
   text-transform: uppercase;
   letter-spacing: 1px;
   color: var(--text-muted);
-  border-left: 1px solid var(--border);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -265,7 +270,6 @@ body {
 .stage-column {
   flex: 1;
   position: relative;
-  border-left: 1px solid #ece7de;
 }
 
 /* ════════════════════════════════════
@@ -808,7 +812,7 @@ body {
 
   /* ── Schedule panel: full width ── */
   .schedule-panel-header { display: none; }
-  .schedule-panel.mobile-active { background: var(--card-bg); }
+  .schedule-panel.mobile-active { background: transparent; }
   .itinerary-scroll { padding: 4px 0 calc(80px + env(safe-area-inset-bottom, 0px)); }
   .itinerary-item { padding: 0 10px; }
   .it-time-col { width: 50px; padding-right: 6px; }
@@ -823,7 +827,7 @@ body {
 
   .grid-mobile-header {
     display: flex;
-    background: var(--card-bg);
+    background: transparent;
     border-bottom: 1px solid var(--border);
   }
   .grid-mobile-header .grid-time-spacer {
@@ -836,15 +840,10 @@ body {
     font-size: 8px;
     padding: 5px 2px;
     letter-spacing: 0.5px;
-    border-left: 1px solid var(--border);
     text-align: center;
     font-weight: 600;
     text-transform: uppercase;
     color: var(--text-muted);
-  }
-
-  .grid-body {
-    padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px));
   }
   .grid-scroll {
     overflow-x: auto;

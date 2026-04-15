@@ -77,7 +77,7 @@ function ScheduleGrid({ acts, day, hoveredActId, onHoverAct, onLeaveAct }: {
 }) {
   const [rangeStart, rangeEnd] = DAY_RANGES[day];
   const totalHours = (rangeEnd - rangeStart) / 60;
-  const gridHeight = totalHours * HOUR_PX;
+  const gridHeight = totalHours * HOUR_PX + 120; // extra scroll space at bottom
 
   const hours: number[] = [];
   for (let h = Math.ceil(rangeStart / 60); h <= Math.floor(rangeEnd / 60); h++) {

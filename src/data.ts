@@ -479,8 +479,9 @@ export const sundayItinerary: ItineraryBlock[] = [
     start: t(21, 45),
     end: t(24, 0),
     options: [
-      { actId: 'su-kaskade', name: 'Kaskade', stage: 'Sahara (10:50)', time: '10:50 PM', who: 'caitlin', tentative: true },
+      { actId: 'su-subtronics', name: 'Subtronics', stage: 'Sahara (9:05)', time: '9:05 PM', who: 'caitlin' },
       { actId: 'su-karol-g', name: 'KAROL G', stage: 'Main (10:10)', time: '10:10 PM', who: 'caitlin' },
+      { actId: 'su-kaskade', name: 'Kaskade', stage: 'Sahara (10:50)', time: '10:50 PM', who: 'caitlin', tentative: true },
     ],
   },
 ];

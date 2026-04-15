@@ -240,7 +240,8 @@ function ItineraryItem({ block, hoveredActId, onHoverAct, onLeaveAct, acts }: {
 export default function App() {
   const [day, setDay] = useState<Day>('friday');
   const [hoveredActId, setHoveredActId] = useState<string | null>(null);
-  const [mobileView, setMobileView] = useState<'grid' | 'schedule'>('schedule');
+  const [mobileView, setMobileView] = useState<'grid' | 'schedule' | 'map'>('schedule');
+  const [showMap, setShowMap] = useState(false);
   const gridRef = useRef<HTMLDivElement>(null);
 
   const onHoverAct = useCallback((id: string, scrollGrid?: boolean) => {
@@ -264,9 +265,17 @@ export default function App() {
       <header className="app-header">
         <div className="header-top">
           <div className="header-brand">COACHELLA</div>
-          <div className="header-info">
+          {/* Desktop: info + map button */}
+          <div className="header-info desktop-only">
             <span className="header-weekend">Weekend 2</span>
             <span className="header-day">{DAY_LABELS[day]}</span>
+            <button className="map-btn" onClick={() => setShowMap(true)}>Map</button>
+          </div>
+          {/* Mobile: view switcher */}
+          <div className="mobile-view-tabs mobile-only">
+            <button className={`view-tab ${mobileView === 'schedule' ? 'active' : ''}`} onClick={() => setMobileView('schedule')}>Schedule</button>
+            <button className={`view-tab ${mobileView === 'grid' ? 'active' : ''}`} onClick={() => setMobileView('grid')}>Lineup</button>
+            <button className={`view-tab ${mobileView === 'map' ? 'active' : ''}`} onClick={() => setMobileView('map')}>Map</button>
           </div>
         </div>
         <nav className="day-tabs">
@@ -282,7 +291,7 @@ export default function App() {
         </nav>
       </header>
 
-      <div className="legend-bar">
+      <div className="legend-bar desktop-only">
         <span className="legend-item"><span className="swatch pick-you" /> You</span>
         <span className="legend-item"><span className="swatch pick-violet" /> Violet</span>
         <span className="legend-item"><span className="swatch pick-both" /> Both</span>
@@ -318,22 +327,23 @@ export default function App() {
             ))}
           </div>
         </div>
+        {/* Mobile map view */}
+        <div className={`map-panel ${mobileView === 'map' ? 'mobile-active' : ''}`}>
+          <div className="map-scroll">
+            <img src={`${import.meta.env.BASE_URL}venue-map.png`} alt="Coachella Venue Map" className="venue-map-img" />
+          </div>
+        </div>
       </div>
 
-      <nav className="mobile-bottom-nav">
-        <button
-          className={`bottom-nav-btn ${mobileView === 'schedule' ? 'active' : ''}`}
-          onClick={() => setMobileView('schedule')}
-        >
-          Our Schedule
-        </button>
-        <button
-          className={`bottom-nav-btn ${mobileView === 'grid' ? 'active' : ''}`}
-          onClick={() => setMobileView('grid')}
-        >
-          Full Lineup
-        </button>
-      </nav>
+      {/* Desktop map modal */}
+      {showMap && (
+        <div className="map-overlay" onClick={() => setShowMap(false)}>
+          <div className="map-modal" onClick={e => e.stopPropagation()}>
+            <button className="map-close" onClick={() => setShowMap(false)}>Close</button>
+            <img src={`${import.meta.env.BASE_URL}venue-map.png`} alt="Coachella Venue Map" className="venue-map-img" />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

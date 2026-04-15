@@ -207,14 +207,13 @@ function ItineraryItem({ block, hoveredActId, onHoverAct, onLeaveAct, acts }: {
           {block.type !== 'gametime' && <div className="it-line" />}
         </div>
         <div className={`it-card ${block.type}`}>
-          <div className="it-card-header">
-            {actData && <PickDot picked={actData.picked} />}
-            <span className="it-title">{block.title}</span>
-          </div>
+          <div className="it-card-title">{block.title}</div>
           {(block.stage || block.type === 'act') && (
             <div className="it-card-meta">
-              {block.stage && <span className="it-stage">{block.stage}</span>}
-              {block.type === 'act' && <span className="it-timerange">{formatTime(block.start)}-{formatTime(block.end)}</span>}
+              {actData && <PickDot picked={actData.picked} />}
+              {block.stage && <span className="it-meta-text">{block.stage}</span>}
+              {block.stage && block.type === 'act' && <span className="it-meta-sep">·</span>}
+              {block.type === 'act' && <span className="it-meta-text">{formatTime(block.start)}–{formatTime(block.end)}</span>}
             </div>
           )}
           {block.subtitle && <div className="it-subtitle">{block.subtitle}</div>}

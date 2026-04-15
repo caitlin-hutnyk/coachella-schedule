@@ -513,38 +513,34 @@ body {
   border: 1px dashed var(--text-light);
 }
 
-.it-card-header {
-  display: flex;
-  align-items: baseline;
-  gap: 5px;
-  flex-wrap: wrap;
-}
-
-.it-title {
-  font-size: 14px;
-  font-weight: 600;
+.it-card-title {
+  font-size: 15px;
+  font-weight: 700;
   color: var(--text);
+  line-height: 1.2;
 }
 
 .it-card-meta {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-top: 2px;
+  gap: 5px;
+  margin-top: 3px;
 }
 
-.it-card.walk .it-title {
+.it-meta-text {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.it-meta-sep {
+  font-size: 11px;
+  color: var(--text-light);
+}
+
+.it-card.walk .it-card-title {
   font-size: 11px;
   font-weight: 400;
   color: var(--text-muted);
-}
-
-.it-stage {
-  font-size: 10px;
-  color: var(--text-muted);
-  padding: 1px 6px;
-  background: var(--bg);
-  border-radius: 3px;
 }
 
 .it-who {
@@ -559,14 +555,6 @@ body {
 .it-who.both { background: var(--both-color); }
 .it-who.you { background: var(--you-color); }
 .it-who.violet { background: var(--violet-color); }
-
-.it-timerange {
-  font-size: 10px;
-  color: var(--text-muted);
-  margin-left: auto;
-  white-space: nowrap;
-  font-weight: 500;
-}
 
 .it-subtitle {
   font-size: 11px;
@@ -659,7 +647,7 @@ body {
   border: 3px solid #3678c2;
 }
 
-.itinerary-item.it-locked .it-title {
+.itinerary-item.it-locked .it-card-title {
   color: #1e3a5f;
   font-weight: 700;
 }
@@ -681,7 +669,7 @@ body {
   background: #fef5f5;
 }
 
-.itinerary-item.it-must-see .it-title {
+.itinerary-item.it-must-see .it-card-title {
   color: #b91c1c;
   font-weight: 700;
 }

@@ -104,6 +104,14 @@ function ScheduleGrid({ acts, day, hoveredActId, onHoverAct, onLeaveAct }: {
         ))}
       </div>
       <div className="grid-scroll" ref={scrollRef} onScroll={onGridScroll}>
+        {/* Mobile: header inside scroll container so it scrolls horizontally with grid */}
+        <div className="grid-mobile-header">
+          {STAGES.map(stage => (
+            <div key={stage} className="grid-header-stage">
+              <span>{STAGE_LABELS[stage]}</span>
+            </div>
+          ))}
+        </div>
         <div className="grid-body" style={{ height: `${gridHeight}px` }}>
           <div className="time-axis">
             {hours.map(h => (

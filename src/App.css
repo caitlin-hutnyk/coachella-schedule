@@ -30,8 +30,8 @@
   --day-bg: linear-gradient(180deg, #dce8f5 0%, #f5f0e8 20%);
 }
 .day-saturday {
-  --day-accent: #4a90d9;
-  --day-fill: #3678c2;
+  --day-accent: #c27a4a;
+  --day-fill: #b06838;
   --day-bg: linear-gradient(180deg, #f5ddd0 0%, #f5f0e8 20%);
 }
 .day-sunday {
@@ -670,6 +670,7 @@ body {
    ════════════════════════════════════ */
 .mobile-only { display: none; }
 .desktop-only { display: flex; }
+.grid-mobile-header { display: none; }
 
 /* ════════════════════════════════════
    Map button (desktop)
@@ -808,7 +809,7 @@ body {
   /* ── Schedule panel: full width ── */
   .schedule-panel-header { display: none; }
   .schedule-panel.mobile-active { background: var(--card-bg); }
-  .itinerary-scroll { padding: 4px 0 24px; }
+  .itinerary-scroll { padding: 4px 0 calc(80px + env(safe-area-inset-bottom, 0px)); }
   .itinerary-item { padding: 0 10px; }
   .it-time-col { width: 50px; padding-right: 6px; }
   .it-time { font-size: 9px; }
@@ -818,9 +819,41 @@ body {
   .it-note { font-size: 9px; }
 
   /* ── Grid: compact, horizontal scroll ── */
+  /* On mobile, header scrolls with the grid horizontally */
   .grid-header {
-    overflow: hidden;
-    min-width: max-content;
+    display: none;
+  }
+  .grid-scroll {
+    position: relative;
+  }
+  .grid-scroll::before {
+    content: none;
+  }
+  .grid-body {
+    padding-top: 28px;
+    padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px));
+  }
+  .grid-mobile-header {
+    display: flex;
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: var(--card-bg);
+    border-bottom: 1px solid var(--border);
+    margin-left: -36px;
+    padding-left: 36px;
+  }
+  .grid-mobile-header .grid-header-stage {
+    min-width: 38vw;
+    flex: none;
+    font-size: 8px;
+    padding: 5px 2px;
+    letter-spacing: 0.5px;
+    border-left: 1px solid var(--border);
+    text-align: center;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--text-muted);
   }
   .grid-scroll {
     overflow-x: auto;

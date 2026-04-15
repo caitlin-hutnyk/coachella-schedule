@@ -34,16 +34,17 @@ const DAY_LABELS: Record<Day, string> = {
 
 const HOUR_PX = 80;
 
-function ActBlock({ act, rangeStart, highlighted, dimmed, onHover, onLeave }: {
+function ActBlock({ act, rangeStart, highlighted, dimmed, onHover, onLeave, hourPx }: {
   act: Act;
   rangeStart: number;
   highlighted: boolean;
   dimmed: boolean;
   onHover: () => void;
   onLeave: () => void;
+  hourPx: number;
 }) {
-  const top = ((act.start - rangeStart) / 60) * HOUR_PX;
-  const height = Math.max(((act.end - act.start) / 60) * HOUR_PX - 2, 20);
+  const top = ((act.start - rangeStart) / 60) * hourPx;
+  const height = Math.max(((act.end - act.start) / 60) * hourPx - 2, hourPx < 50 ? 10 : 20);
 
   let pickClass = '';
   if (act.picked === 'you') pickClass = 'pick-you';
@@ -59,13 +60,23 @@ function ActBlock({ act, rangeStart, highlighted, dimmed, onHover, onLeave }: {
       id={`grid-${act.id}`}
     >
       <div className="act-name">{act.name}</div>
-      {height > 30 && (
+      {height > 25 && (
         <div className="act-time-label">{formatTimeShort(act.start)}-{formatTimeShort(act.end)}</div>
       )}
       {act.locked && <div className="locked-badge">✓</div>}
       {act.priority === 'must' && <div className="must-badge">★</div>}
     </div>
   );
+}
+
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  useState(() => {
+    const handler = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener('resize', handler);
+    return () => window.removeEventListener('resize', handler);
+  });
+  return isMobile;
 }
 
 function ScheduleGrid({ acts, day, hoveredActId, onHoverAct, onLeaveAct }: {
@@ -75,9 +86,11 @@ function ScheduleGrid({ acts, day, hoveredActId, onHoverAct, onLeaveAct }: {
   onHoverAct: (id: string, scrollGrid?: boolean) => void;
   onLeaveAct: () => void;
 }) {
+  const isMobile = useIsMobile();
+  const hourPx = isMobile ? 40 : HOUR_PX;
   const [rangeStart, rangeEnd] = DAY_RANGES[day];
   const totalHours = (rangeEnd - rangeStart) / 60;
-  const gridHeight = totalHours * HOUR_PX + 120; // extra scroll space at bottom
+  const gridHeight = totalHours * hourPx + (isMobile ? 60 : 120);
 
   const hours: number[] = [];
   for (let h = Math.ceil(rangeStart / 60); h <= Math.floor(rangeEnd / 60); h++) {
@@ -119,7 +132,7 @@ function ScheduleGrid({ acts, day, hoveredActId, onHoverAct, onLeaveAct }: {
               <div
                 key={h}
                 className="time-marker"
-                style={{ top: `${((h * 60 - rangeStart) / 60) * HOUR_PX}px` }}
+                style={{ top: `${((h * 60 - rangeStart) / 60) * hourPx}px` }}
               >
                 <span>{formatTime(h * 60)}</span>
               </div>
@@ -130,7 +143,7 @@ function ScheduleGrid({ acts, day, hoveredActId, onHoverAct, onLeaveAct }: {
             <div
               key={`line-${h}`}
               className="hour-line"
-              style={{ top: `${((h * 60 - rangeStart) / 60) * HOUR_PX}px` }}
+              style={{ top: `${((h * 60 - rangeStart) / 60) * hourPx}px` }}
             />
           ))}
 
@@ -148,6 +161,7 @@ function ScheduleGrid({ acts, day, hoveredActId, onHoverAct, onLeaveAct }: {
                       dimmed={hoveredActId !== null && hoveredActId !== act.id}
                       onHover={() => onHoverAct(act.id)}
                       onLeave={onLeaveAct}
+                      hourPx={hourPx}
                     />
                   ))}
               </div>

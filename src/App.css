@@ -843,61 +843,60 @@ body {
   .it-subtitle { font-size: 10px; }
   .it-note { font-size: 9px; }
 
-  /* ── Grid: compact, horizontal scroll ── */
+  /* ── Grid: fit everything on screen, pinch to zoom ── */
   .grid-header { display: none; }
 
   .grid-mobile-header {
     display: flex;
     background: transparent;
-    border-bottom: 1px solid var(--border);
   }
   .grid-mobile-header .grid-time-spacer {
-    width: 36px;
+    width: 24px;
     flex-shrink: 0;
   }
   .grid-mobile-header .grid-header-stage {
-    min-width: 38vw;
-    flex: none;
-    font-size: 8px;
-    padding: 5px 2px;
-    letter-spacing: 0.5px;
+    flex: 1;
+    font-size: 6px;
+    padding: 3px 1px;
+    letter-spacing: 0;
     text-align: center;
-    font-weight: 600;
+    font-weight: 700;
     text-transform: uppercase;
     color: var(--text-muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .schedule-grid {
+    overflow: hidden;
   }
   .grid-scroll {
-    overflow-x: auto;
-    overflow-y: auto;
+    overflow: auto;
     -webkit-overflow-scrolling: touch;
   }
-  .grid-time-spacer { width: 36px; }
-  .grid-body { margin-left: 36px; min-width: max-content; }
-  .time-axis { left: -36px; width: 36px; }
-  .time-marker { padding-right: 3px; }
-  .time-marker span { font-size: 8px; }
 
-  .grid-header-stage {
-    min-width: 38vw;
-    flex: none;
-    font-size: 8px;
-    padding: 5px 2px;
-    letter-spacing: 0.5px;
-  }
-  .stage-column {
-    min-width: 38vw;
-    flex: none;
-  }
+  .grid-time-spacer { width: 24px; }
+  .grid-body { margin-left: 24px; }
+  .time-axis { left: -24px; width: 24px; }
+  .time-marker { padding-right: 2px; }
+  .time-marker span { font-size: 6px; }
 
-  /* Compact act blocks */
+  /* All 8 columns fit on screen — vertical scroll only, compact */
+  .stage-column { flex: 1; }
+
+
+  /* Tiny act blocks */
   .act-block {
-    left: 2px;
-    right: 2px;
-    padding: 2px 4px;
-    border-radius: 3px;
+    left: 1px;
+    right: 1px;
+    padding: 1px 2px;
+    border-radius: 2px;
   }
-  .act-block .act-name { font-size: 9px; }
-  .act-block .act-time-label { font-size: 7px; }
+  .act-block .act-name { font-size: 6px; line-height: 1.1; }
+  .act-block .act-time-label { display: none; }
+  .locked-badge { font-size: 6px; top: 1px; right: 1px; }
+  .must-badge { font-size: 6px; top: 1px; right: 8px; }
 
   /* ── Disable hover effects on touch ── */
   .act-block.highlighted { box-shadow: none; z-index: 1; }

@@ -11,9 +11,9 @@
   --card-bg: #fffdf8;
 
   /* Pick stripe/dot colors */
-  --you-color: #e8890c;
-  --violet-color: #8b5cf6;
-  --both-color: #14b8a6;
+  --you-color: #f0a050;
+  --violet-color: #b094e8;
+  --both-color: #0891b2;
 
   /* Must-see ring */
   --must-ring: #dc2626;
@@ -134,9 +134,9 @@ body {
   display: inline-block;
 }
 
-.swatch.pick-you { background: white; border-left: 4px solid var(--you-color); border-top: 1px solid #ddd; border-right: 1px solid #ddd; border-bottom: 1px solid #ddd; }
-.swatch.pick-violet { background: white; border-left: 4px solid var(--violet-color); border-top: 1px solid #ddd; border-right: 1px solid #ddd; border-bottom: 1px solid #ddd; }
-.swatch.pick-both { background: white; border-left: 4px solid var(--both-color); border-top: 1px solid #ddd; border-right: 1px solid #ddd; border-bottom: 1px solid #ddd; }
+.swatch.pick-you { background: var(--you-color); border-radius: 50%; width: 10px; height: 10px; }
+.swatch.pick-violet { background: var(--violet-color); border-radius: 50%; width: 10px; height: 10px; }
+.swatch.pick-both { background: var(--both-color); border-radius: 50%; width: 10px; height: 10px; box-shadow: 0 0 0 2px #b2e4ec; }
 .swatch.swatch-locked { background: var(--day-fill); border-radius: 3px; }
 .swatch.swatch-must { background: #d94545; border-radius: 3px; }
 .swatch.swatch-tentative { background: #b8d4f0; border: 2px solid #9ac0e6; border-radius: 3px; }
@@ -325,9 +325,9 @@ body {
 }
 
 .act-block.pick-both:not(.locked):not(.tentative) {
-  background: white;
-  border: 1px solid #cce0da;
-  border-left: 3px solid var(--both-color);
+  background: #f0fafa;
+  border: 1px solid #b0d8d8;
+  border-left: 4px solid var(--both-color);
 }
 .act-block.pick-both:not(.locked):not(.tentative) .act-name {
   color: var(--text);
@@ -582,16 +582,35 @@ body {
   background: var(--bg);
 }
 
-.opt-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  flex-shrink: 0;
+.it-option.opt-tentative {
+  background: #dce8f5;
+  border: 1px solid #b8d4f0;
+  border-radius: 5px;
+  padding: 5px 8px;
+  margin-bottom: 2px;
 }
 
-.opt-dot.you { background: var(--you-color); }
-.opt-dot.violet { background: var(--violet-color); }
-.opt-dot.both { background: var(--both-color); }
+.it-option.opt-tentative .opt-name {
+  font-weight: 600;
+  color: #1e3a5f;
+}
+
+.it-option.opt-tentative:hover, .it-option.opt-tentative.opt-highlighted {
+  background: #c8dbf0;
+}
+
+/* Pick indicator dots — used everywhere in sidebar */
+.pick-indicator {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: inline-block;
+}
+
+.pick-indicator.you { background: var(--you-color); }
+.pick-indicator.violet { background: var(--violet-color); }
+.pick-indicator.both { background: var(--both-color); box-shadow: 0 0 0 1.5px #b2e4ec; }
 
 .opt-name {
   font-size: 11px;

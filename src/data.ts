@@ -47,6 +47,7 @@ export interface ItineraryOption {
   stage: string;
   time: string;
   who: string;
+  tentative?: boolean;
 }
 
 export type Day = 'friday' | 'saturday' | 'sunday';
@@ -81,7 +82,7 @@ export const fridayActs: Act[] = [
   { id: 'f-wednesday', name: 'Wednesday', stage: 'sonora', start: t(15, 40), end: t(16, 20), picked: 'you', priority: 'want' },
   { id: 'f-fleshwater', name: 'Fleshwater', stage: 'sonora', start: t(16, 50), end: t(17, 30) },
   { id: 'f-two-lips', name: 'The Two Lips', stage: 'sonora', start: t(18, 0), end: t(18, 40) },
-  { id: 'f-ninajirachi', name: 'Ninajirachi', stage: 'sonora', start: t(19, 10), end: t(20, 0), picked: 'you', priority: 'want', locked: true },
+  { id: 'f-ninajirachi', name: 'Ninajirachi', stage: 'sonora', start: t(19, 10), end: t(20, 0), picked: 'you', priority: 'want', tentative: true },
   { id: 'f-cachirula', name: 'Cachirula & Loojan', stage: 'sonora', start: t(20, 25), end: t(21, 5) },
   { id: 'f-hot-mulligan', name: 'Hot Mulligan', stage: 'sonora', start: t(22, 10), end: t(22, 55) },
 
@@ -93,7 +94,7 @@ export const fridayActs: Act[] = [
   { id: 'f-cmat', name: 'CMAT', stage: 'gobi', start: t(18, 15), end: t(18, 55) },
   { id: 'f-fakemink', name: 'fakemink', stage: 'gobi', start: t(19, 20), end: t(20, 0) },
   { id: 'f-holly', name: 'Holly Humberstone', stage: 'gobi', start: t(20, 25), end: t(21, 10) },
-  { id: 'f-joost', name: 'Joost', stage: 'gobi', start: t(21, 50), end: t(22, 35), picked: 'both', priority: 'want', tentative: true },
+  { id: 'f-joost', name: 'Joost', stage: 'gobi', start: t(21, 50), end: t(22, 35), picked: 'both', priority: 'want', locked: true },
   { id: 'f-creepy-nuts', name: 'Creepy Nuts', stage: 'gobi', start: t(23, 5), end: t(23, 55) },
 
   // Mojave
@@ -259,7 +260,7 @@ export const sundayActs: Act[] = [
   { id: 'su-gingee', name: 'GINGEE', stage: 'sahara', start: t(14, 30), end: t(15, 30) },
   { id: 'su-girl-math', name: 'Girl Math (VNSSA x NALA)', stage: 'sahara', start: t(15, 35), end: t(16, 35) },
   { id: 'su-bunt', name: 'BUNT.', stage: 'sahara', start: t(16, 45), end: t(17, 45), picked: 'both', priority: 'want' },
-  { id: 'su-duke-dumont', name: 'Duke Dumont', stage: 'sahara', start: t(18, 10), end: t(19, 10), picked: 'you', priority: 'want', locked: true },
+  { id: 'su-duke-dumont', name: 'Duke Dumont', stage: 'sahara', start: t(18, 10), end: t(19, 10), picked: 'you', priority: 'want', tentative: true },
   { id: 'su-mochakk', name: 'Mochakk', stage: 'sahara', start: t(19, 25), end: t(20, 25) },
   { id: 'su-subtronics', name: 'Subtronics', stage: 'sahara', start: t(21, 5), end: t(22, 5), picked: 'you', priority: 'want' },
   { id: 'su-kaskade', name: 'Kaskade', stage: 'sahara', start: t(22, 50), end: t(23, 55), picked: 'you', priority: 'want', tentative: true },
@@ -318,38 +319,16 @@ export const fridayItinerary: ItineraryBlock[] = [
   },
   {
     type: 'food',
-    title: 'Dinner + meander',
-    subtitle: '~2+ hours of Day 1 exploration',
+    title: 'Dinner + meander + vibes',
+    subtitle: 'Explore, eat, catch acts. Head toward Sahara for Levity.',
     start: t(16, 50),
-    end: t(19, 0),
-    options: [
-      { actId: 'f-central-cee', name: 'Central Cee', stage: 'Mojave', time: '5:30 PM', who: 'violet' },
-      { actId: 'f-kettama', name: 'Kettama', stage: 'Yuma', time: '6:15 PM', who: 'you' },
-    ],
-  },
-  {
-    type: 'walk',
-    title: '→ Head to Sonora',
-    start: t(19, 0),
-    end: t(19, 10),
-    note: '~5-10 min walk',
-  },
-  {
-    type: 'act',
-    actId: 'f-ninajirachi',
-    title: 'Ninajirachi',
-    stage: 'Sonora',
-    start: t(19, 10),
-    end: t(20, 0),
-    who: 'you',
-  },
-  {
-    type: 'meander',
-    title: 'Meander toward Sahara',
-    subtitle: 'Sahara/Gobi area',
-    start: t(20, 0),
     end: t(21, 15),
     options: [
+      { actId: 'f-ninajirachi', name: 'Ninajirachi', stage: 'Sonora (7:10)', time: '7:10 PM', who: 'you', tentative: true },
+      { actId: 'f-central-cee', name: 'Central Cee', stage: 'Mojave (5:30)', time: '5:30 PM', who: 'violet' },
+      { actId: 'f-kettama', name: 'Kettama', stage: 'Yuma (6:15)', time: '6:15 PM', who: 'you' },
+      { actId: 'f-the-xx', name: 'The xx', stage: 'Main (7:00)', time: '7:00 PM', who: 'you' },
+      { actId: 'f-marlon', name: 'Marlon Hoffstadt', stage: 'Sahara (6:15)', time: '6:15 PM', who: 'you' },
       { actId: 'f-katseye', name: 'KATSEYE', stage: 'Sahara (8:00)', time: '8:00 PM', who: 'both' },
     ],
   },
@@ -381,63 +360,32 @@ export const fridayItinerary: ItineraryBlock[] = [
     note: '★ Definitely going — leave Levity early for this',
   },
   {
-    type: 'walk',
-    title: '→ Gobi to Outdoor Theatre',
-    start: t(22, 35),
-    end: t(22, 45),
-    note: '~10 min walk',
-  },
-  {
-    type: 'act',
-    actId: 'f-disclosure',
-    title: 'Disclosure',
-    stage: 'Outdoor Theatre',
-    start: t(22, 45),
-    end: t(23, 55),
-    who: 'you',
-    note: 'Tentative — catch from ~10:45',
-  },
-  {
-    type: 'act',
-    actId: 'f-anyma',
-    title: 'Anyma',
-    stage: 'Main',
-    start: t(24, 0),
-    end: t(25, 0),
-    who: 'you',
-    note: 'Tentative — OT right next to Main',
-  },
-  {
     type: 'gametime',
-    title: 'Or instead…',
-    subtitle: 'Could swap the above for:',
-    start: t(22, 45),
+    title: 'Late night — meander + vibes',
+    subtitle: '~10 min walk Gobi → OT/Main area',
+    start: t(22, 35),
     end: t(25, 0),
     options: [
-      { actId: 'f-ethel-cain', name: 'Ethel Cain', stage: 'Mojave', time: '10:45 PM', who: 'violet' },
-      { actId: 'f-sexyy-red', name: 'Sexyy Red', stage: 'Sahara', time: '12:05 AM', who: 'violet' },
-      { actId: 'f-blood-orange', name: 'Blood Orange', stage: 'Mojave', time: '12:00 AM', who: 'you' },
+      { actId: 'f-disclosure', name: 'Disclosure', stage: 'OT (10:40 PM)', time: '10:40 PM', who: 'you', tentative: true },
+      { actId: 'f-anyma', name: 'Anyma', stage: 'Main (12:00 AM)', time: '12:00 AM', who: 'you', tentative: true },
+      { actId: 'f-ethel-cain', name: 'Ethel Cain', stage: 'Mojave (10:45 PM)', time: '10:45 PM', who: 'violet' },
+      { actId: 'f-sexyy-red', name: 'Sexyy Red', stage: 'Sahara (12:05 AM)', time: '12:05 AM', who: 'violet' },
+      { actId: 'f-blood-orange', name: 'Blood Orange', stage: 'Mojave (12:00 AM)', time: '12:00 AM', who: 'you' },
     ],
   },
 ];
 
 export const saturdayItinerary: ItineraryBlock[] = [
   {
-    type: 'food',
-    title: 'Arrive + eat',
-    subtitle: 'Light day — conserve energy',
-    start: t(15, 0),
+    type: 'meander',
+    title: 'Arrive + explore',
+    subtitle: 'Light day — save energy. Head toward Gobi.',
+    start: t(17, 30),
     end: t(17, 45),
     options: [
-      { actId: 's-kacey', name: 'Kacey Musgraves', stage: 'Mojave', time: '3:00 PM', who: 'violet' },
+      { actId: 's-royel-otis', name: 'Royel Otis', stage: 'Mojave (5:50)', time: '5:50 PM', who: 'both' },
+      { actId: 's-addison-rae', name: 'Addison Rae', stage: 'Main (5:25)', time: '5:25 PM', who: 'violet' },
     ],
-  },
-  {
-    type: 'walk',
-    title: '→ Head to Gobi (arrive 30 min early)',
-    start: t(17, 45),
-    end: t(17, 50),
-    note: 'Buffer for Violet\'s must-see',
   },
   {
     type: 'act',
@@ -450,13 +398,14 @@ export const saturdayItinerary: ItineraryBlock[] = [
     note: '★ Violet must-see — arrive by 5:45',
   },
   {
-    type: 'meander',
-    title: 'Head to Main + camp for Strokes',
-    subtitle: '~10-15 min walk Gobi → Main. Get a great spot.',
+    type: 'food',
+    title: 'Eat + walk to Main',
+    subtitle: 'Grab food, head to Main, get a good spot.',
     start: t(19, 0),
     end: t(21, 0),
     options: [
       { actId: 's-giveon', name: 'GIVĒON', stage: 'Main (7:00)', time: '7:00 PM', who: 'violet' },
+      { actId: 's-sosa', name: 'SOSA', stage: 'Yuma (6:45)', time: '6:45 PM', who: 'you' },
     ],
   },
   {
@@ -488,44 +437,40 @@ export const saturdayItinerary: ItineraryBlock[] = [
   },
   {
     type: 'gametime',
-    title: 'Game time',
-    subtitle: 'DJ Snake x Knock2 conflicts with Strokes/Worship — a genuine loss. Save legs for Sunday?',
+    title: 'Late night — wind down or keep going',
+    subtitle: '',
     start: t(23, 35),
-    end: t(24, 0),
-    options: [],
+    end: t(24, 30),
+    options: [
+      { actId: 's-armin-sat', name: 'Armin van Buuren x Adam Beyer', stage: 'Yuma (nearby)', time: 'til 12:55 AM', who: 'you' },
+      { actId: 's-justin-bieber', name: 'Justin Bieber', stage: 'Main (15-20 min walk)', time: '11:25 PM', who: 'you' },
+    ],
   },
 ];
 
 export const sundayItinerary: ItineraryBlock[] = [
   {
-    type: 'food',
-    title: 'Arrive + eat a real meal',
-    subtitle: 'Day 3 — fuel up. Long evening ahead.',
-    start: t(15, 30),
-    end: t(16, 10),
-  },
-  {
     type: 'meander',
-    title: 'Meander toward Sahara',
-    subtitle: 'Head across the grounds',
-    start: t(16, 10),
-    end: t(18, 0),
+    title: 'Arrive + explore',
+    subtitle: 'Day 3 — take it easy early',
+    start: t(15, 30),
+    end: t(17, 30),
     options: [
       { actId: 'su-jane-remover', name: 'Jane Remover', stage: 'Sonora (4:20)', time: '4:20 PM', who: 'both' },
-      { actId: 'su-clipse', name: 'CLIPSE', stage: 'OT (5:15)', time: '5:15 PM', who: 'violet' },
       { actId: 'su-little-simz', name: 'Little Simz', stage: 'Mojave (4:25)', time: '4:25 PM', who: 'violet' },
       { actId: 'su-bunt', name: 'BUNT.', stage: 'Sahara (4:45)', time: '4:45 PM', who: 'both' },
+      { actId: 'su-clipse', name: 'CLIPSE', stage: 'OT (5:15)', time: '5:15 PM', who: 'violet' },
     ],
   },
   {
-    type: 'act',
-    actId: 'su-duke-dumont',
-    title: 'Duke Dumont',
-    stage: 'Sahara',
-    start: t(18, 10),
-    end: t(18, 35),
-    who: 'you',
-    note: 'Super keen — ~25 min before leaving for OT',
+    type: 'food',
+    title: 'Eat + head toward Sahara',
+    subtitle: 'Fuel up before the evening run',
+    start: t(17, 30),
+    end: t(18, 10),
+    options: [
+      { actId: 'su-duke-dumont', name: 'Duke Dumont', stage: 'Sahara (6:10)', time: '6:10 PM', who: 'you', tentative: true },
+    ],
   },
   {
     type: 'walk',
@@ -579,30 +524,14 @@ export const sundayItinerary: ItineraryBlock[] = [
     note: '★ Your must-see',
   },
   {
-    type: 'walk',
-    title: '→ OT to Sahara',
-    start: t(21, 45),
-    end: t(22, 5),
-    note: '~15-20 min walk',
-  },
-  {
-    type: 'act',
-    actId: 'su-kaskade',
-    title: 'Kaskade',
-    stage: 'Sahara',
-    start: t(22, 50),
-    end: t(23, 55),
-    who: 'you',
-    note: 'Tentative — arrive early, vibe in Sahara',
-  },
-  {
     type: 'gametime',
-    title: 'Or instead…',
-    subtitle: '',
-    start: t(21, 50),
-    end: t(23, 15),
+    title: 'Late night — wind down or keep going',
+    subtitle: '~15-20 min walk OT → Sahara, or 5 min → Main',
+    start: t(21, 45),
+    end: t(24, 0),
     options: [
-      { actId: 'su-karol-g', name: 'KAROL G', stage: 'Main (5 min from OT)', time: '10:10 PM', who: 'you' },
+      { actId: 'su-kaskade', name: 'Kaskade', stage: 'Sahara (10:50)', time: '10:50 PM', who: 'you', tentative: true },
+      { actId: 'su-karol-g', name: 'KAROL G', stage: 'Main (10:10)', time: '10:10 PM', who: 'you' },
     ],
   },
 ];

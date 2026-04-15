@@ -141,13 +141,20 @@ function ScheduleGrid({ acts, day, hoveredActId, onHoverAct, onLeaveAct }: {
   );
 }
 
-function ItineraryItem({ block, hoveredActId, onHoverAct, onLeaveAct }: {
+function PickDot({ picked }: { picked?: string }) {
+  if (!picked) return null;
+  return <span className={`pick-indicator ${picked}`} title={picked === 'both' ? 'Both' : picked === 'you' ? 'You' : 'Violet'} />;
+}
+
+function ItineraryItem({ block, hoveredActId, onHoverAct, onLeaveAct, acts }: {
   block: ItineraryBlock;
   hoveredActId: string | null;
   onHoverAct: (id: string) => void;
   onLeaveAct: () => void;
+  acts: Act[];
 }) {
   const isHighlighted = block.actId ? hoveredActId === block.actId : false;
+  const actData = block.actId ? acts.find(a => a.id === block.actId) : undefined;
 
   return (
     <div
@@ -165,33 +172,54 @@ function ItineraryItem({ block, hoveredActId, onHoverAct, onLeaveAct }: {
         </div>
         <div className={`it-card ${block.type}`}>
           <div className="it-card-header">
+            {actData && <PickDot picked={actData.picked} />}
             <span className="it-title">{block.title}</span>
             {block.stage && <span className="it-stage">{block.stage}</span>}
-            {block.who && (
-              <span className={`it-who ${block.who}`}>
-                {block.who === 'both' ? 'BOTH' : block.who === 'you' ? 'YOU' : 'VI'}
-              </span>
-            )}
           </div>
           {block.subtitle && <div className="it-subtitle">{block.subtitle}</div>}
           {block.note && <div className="it-note">{block.note}</div>}
-          {block.options && block.options.length > 0 && (
-            <div className="it-options">
-              <div className="it-options-label">Options:</div>
-              {block.options.map(opt => (
-                <div
-                  key={opt.actId}
-                  className={`it-option ${hoveredActId === opt.actId ? 'opt-highlighted' : ''}`}
-                  onMouseEnter={(e) => { e.stopPropagation(); onHoverAct(opt.actId, true); }}
-                  onMouseLeave={(e) => { e.stopPropagation(); onLeaveAct(); }}
-                >
-                  <span className={`opt-dot ${opt.who}`} />
-                  <span className="opt-name">{opt.name}</span>
-                  <span className="opt-detail">{opt.stage} · {opt.time}</span>
-                </div>
-              ))}
-            </div>
-          )}
+          {block.options && block.options.length > 0 && (() => {
+            const tentatives = block.options.filter(o => o.tentative);
+            const others = block.options.filter(o => !o.tentative);
+            return (
+              <div className="it-options">
+                {tentatives.length > 0 && (
+                  <>
+                    <div className="it-options-label">Probably:</div>
+                    {tentatives.map(opt => (
+                      <div
+                        key={opt.actId}
+                        className={`it-option opt-tentative ${hoveredActId === opt.actId ? 'opt-highlighted' : ''}`}
+                        onMouseEnter={(e) => { e.stopPropagation(); onHoverAct(opt.actId, true); }}
+                        onMouseLeave={(e) => { e.stopPropagation(); onLeaveAct(); }}
+                      >
+                        <PickDot picked={acts.find(a => a.id === opt.actId)?.picked} />
+                        <span className="opt-name">{opt.name}</span>
+                        <span className="opt-detail">{opt.stage}</span>
+                      </div>
+                    ))}
+                  </>
+                )}
+                {others.length > 0 && (
+                  <>
+                    <div className="it-options-label">{tentatives.length > 0 ? 'Or:' : 'Options:'}</div>
+                    {others.map(opt => (
+                      <div
+                        key={opt.actId}
+                        className={`it-option ${hoveredActId === opt.actId ? 'opt-highlighted' : ''}`}
+                        onMouseEnter={(e) => { e.stopPropagation(); onHoverAct(opt.actId, true); }}
+                        onMouseLeave={(e) => { e.stopPropagation(); onLeaveAct(); }}
+                      >
+                        <PickDot picked={acts.find(a => a.id === opt.actId)?.picked} />
+                        <span className="opt-name">{opt.name}</span>
+                        <span className="opt-detail">{opt.stage}</span>
+                      </div>
+                    ))}
+                  </>
+                )}
+              </div>
+            );
+          })()}
         </div>
       </div>
     </div>
@@ -273,6 +301,7 @@ export default function App() {
                 hoveredActId={hoveredActId}
                 onHoverAct={onHoverAct}
                 onLeaveAct={onLeaveAct}
+                acts={acts}
               />
             ))}
           </div>

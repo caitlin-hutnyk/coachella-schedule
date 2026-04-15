@@ -422,7 +422,7 @@ export const saturdayItinerary: ItineraryBlock[] = [
     start: t(23, 35),
     end: t(24, 30),
     options: [
-      { actId: 's-armin-sat', name: 'Armin van Buuren x Adam Beyer', stage: 'Yuma (nearby)', time: 'til 12:55 AM', who: 'caitlin' },
+      { actId: 's-armin-sat', name: 'Armin van Buuren x Adam Beyer', stage: 'Yuma', time: 'til 12:55 AM', who: 'caitlin' },
       { actId: 's-justin-bieber', name: 'Justin Bieber', stage: 'Main', time: '11:25 PM', who: 'caitlin' },
     ],
   },
@@ -479,9 +479,9 @@ export const sundayItinerary: ItineraryBlock[] = [
     start: t(21, 45),
     end: t(24, 0),
     options: [
-      { actId: 'su-subtronics', name: 'Subtronics', stage: 'Sahara (9:05)', time: '9:05 PM', who: 'caitlin' },
-      { actId: 'su-karol-g', name: 'KAROL G', stage: 'Main (10:10)', time: '10:10 PM', who: 'caitlin' },
-      { actId: 'su-kaskade', name: 'Kaskade', stage: 'Sahara (10:50)', time: '10:50 PM', who: 'caitlin', tentative: true },
+      { actId: 'su-subtronics', name: 'Subtronics', stage: 'Sahara', time: '9:05 PM', who: 'caitlin' },
+      { actId: 'su-karol-g', name: 'KAROL G', stage: 'Main', time: '10:10 PM', who: 'caitlin' },
+      { actId: 'su-kaskade', name: 'Kaskade', stage: 'Sahara', time: '10:50 PM', who: 'caitlin', tentative: true },
     ],
   },
 ];

@@ -165,9 +165,11 @@ function ItineraryItem({ block, hoveredActId, onHoverAct, onLeaveAct, acts }: {
   const isHighlighted = block.actId ? hoveredActId === block.actId : false;
   const actData = block.actId ? acts.find(a => a.id === block.actId) : undefined;
 
+  const isMustSee = actData?.priority === 'must';
+
   return (
     <div
-      className={`itinerary-item ${block.type} ${isHighlighted ? 'it-highlighted' : ''}`}
+      className={`itinerary-item ${block.type} ${isHighlighted ? 'it-highlighted' : ''} ${isMustSee ? 'it-must-see' : ''}`}
       onMouseEnter={() => block.actId && onHoverAct(block.actId, true)}
       onMouseLeave={onLeaveAct}
     >
@@ -176,7 +178,7 @@ function ItineraryItem({ block, hoveredActId, onHoverAct, onLeaveAct, acts }: {
       </div>
       <div className="it-content">
         <div className="it-connector">
-          <div className={`it-dot ${block.type}`} />
+          <div className={`it-dot ${block.type} ${isMustSee ? 'must' : ''}`} />
           {block.type !== 'gametime' && <div className="it-line" />}
         </div>
         <div className={`it-card ${block.type}`}>

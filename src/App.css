@@ -624,6 +624,28 @@ body {
   margin-left: auto;
 }
 
+/* ── Must-see itinerary items: red accent ── */
+.itinerary-item.it-must-see .it-dot.act {
+  background: #d94545;
+  border-color: #d94545;
+}
+
+.itinerary-item.it-must-see .it-dot.must {
+  background: #d94545;
+  border-color: #d94545;
+  box-shadow: 0 0 0 3px rgba(217, 69, 69, 0.2);
+}
+
+.itinerary-item.it-must-see .it-card {
+  border-left: 4px solid #d94545;
+  background: #fef5f5;
+}
+
+.itinerary-item.it-must-see .it-title {
+  color: #b91c1c;
+  font-weight: 700;
+}
+
 /* Itinerary hover */
 .itinerary-item.it-highlighted .it-card {
   border-color: var(--day-accent);
@@ -647,7 +669,11 @@ body {
    MOBILE (<768px)
    ════════════════════════════════════ */
 
-.mobile-bottom-nav { display: none; }
+/* Hidden on desktop */
+.mobile-bottom-nav {
+  display: none;
+  flex-shrink: 0;
+}
 
 @media (max-width: 767px) {
   /* ── Header: compact ── */
@@ -721,13 +747,22 @@ body {
   .act-block { padding: 4px 5px; }
   .act-block .act-name { font-size: 11px; }
 
-  /* ── Bottom nav ── */
+  /* ── App needs bottom padding for fixed nav ── */
+  .app {
+    padding-bottom: calc(56px + env(safe-area-inset-bottom, 0px));
+  }
+
+  /* ── Bottom nav: fixed to bottom of viewport ── */
   .mobile-bottom-nav {
     display: flex;
-    flex-shrink: 0;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
     border-top: 1px solid var(--border);
     background: var(--card-bg);
-    padding: 6px 12px calc(6px + env(safe-area-inset-bottom));
+    padding: 8px 12px calc(8px + env(safe-area-inset-bottom, 0px));
     gap: 8px;
   }
 
@@ -744,6 +779,7 @@ body {
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.15s;
+    -webkit-tap-highlight-color: transparent;
   }
 
   .bottom-nav-btn.active {

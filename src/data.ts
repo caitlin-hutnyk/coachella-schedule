@@ -15,7 +15,7 @@ export const STAGE_LABELS: Record<Stage, string> = {
 // Ordered north → south matching the grounds layout
 // Coachella+OT (north) → Sonora (central) → Gobi+Mojave (east) → Quasar+Yuma+Sahara (south)
 // Far left to far right = longest walk (~20 min)
-export const STAGES: Stage[] = ['coachella', 'outdoor', 'sonora', 'gobi', 'mojave', 'quasar', 'yuma', 'sahara', 'dolab'];
+export const STAGES: Stage[] = ['coachella', 'outdoor', 'sonora', 'gobi', 'mojave', 'quasar', 'yuma', 'dolab', 'sahara'];
 
 export interface Act {
   id: string;

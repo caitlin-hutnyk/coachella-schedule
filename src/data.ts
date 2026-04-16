@@ -214,7 +214,7 @@ export const saturdayActs: Act[] = [
   { id: 's-sosa', name: 'SOSA', stage: 'yuma', start: t(18, 45), end: t(20, 15), picked: 'caitlin', priority: 'want' },
   { id: 's-bedouin', name: 'Bedouin', stage: 'yuma', start: t(20, 15), end: t(21, 45) },
   { id: 's-boys-noize', name: 'Boys Noize', stage: 'yuma', start: t(21, 45), end: t(23, 0), picked: 'caitlin', priority: 'want' },
-  { id: 's-armin-sat', name: 'Armin van Buuren x Adam Beyer', stage: 'yuma', start: t(23, 0), end: t(24, 55) },
+  { id: 's-armin-sat', name: 'Armin van Buuren x Adam Beyer', stage: 'yuma', start: t(23, 0), end: t(24, 55), picked: 'caitlin', priority: 'want' },
 
   // Quasar
   { id: 's-devault', name: 'Devault', stage: 'quasar', start: t(17, 0), end: t(19, 0) },
@@ -232,7 +232,7 @@ export const saturdayActs: Act[] = [
   { id: 's-dl-ape-drums', name: 'Ape Drums x Bontan', stage: 'dolab', start: t(19, 25), end: t(20, 35) },
   { id: 's-dl-gudfella', name: 'GUDFELLA', stage: 'dolab', start: t(20, 35), end: t(21, 35) },
   { id: 's-dl-seth-troxler', name: 'Seth Troxler', stage: 'dolab', start: t(21, 35), end: t(22, 35) },
-  { id: 's-dl-after-midnight', name: 'AFTER MIDNIGHT (Matroda x San Pacho)', stage: 'dolab', start: t(22, 35), end: t(23, 45) },
+  { id: 's-dl-after-midnight', name: 'AFTER MIDNIGHT (Matroda x San Pacho)', stage: 'dolab', start: t(22, 35), end: t(23, 45), picked: 'caitlin', priority: 'want' },
   { id: 's-dl-surprise', name: 'SURPRISE', stage: 'dolab', start: t(23, 50), end: t(25, 0) },
 ];
 
@@ -461,6 +461,7 @@ export const saturdayItinerary: ItineraryBlock[] = [
     start: t(23, 35),
     end: t(24, 30),
     options: [
+      { actId: 's-dl-after-midnight', name: 'AFTER MIDNIGHT (Matroda x San Pacho)', stage: 'Do LaB', time: '10:35 PM', who: 'caitlin' },
       { actId: 's-armin-sat', name: 'Armin van Buuren x Adam Beyer', stage: 'Yuma', time: '11:00 PM', who: 'caitlin' },
       { actId: 's-justin-bieber', name: 'Justin Bieber', stage: 'Main', time: '11:25 PM', who: 'caitlin' },
     ],

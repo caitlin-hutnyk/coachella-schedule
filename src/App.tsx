@@ -22,8 +22,8 @@ function formatTimeShort(mins: number): string {
 
 const DAY_RANGES: Record<Day, [number, number]> = {
   friday: [13 * 60, 25 * 60],
-  saturday: [13 * 60, 24.5 * 60],
-  sunday: [13 * 60, 23.5 * 60],
+  saturday: [13 * 60, 25 * 60],
+  sunday: [13 * 60, 24 * 60],
 };
 
 const DAY_LABELS: Record<Day, string> = {

@@ -297,7 +297,7 @@ body {
   cursor: pointer;
   transition: opacity 0.2s, box-shadow 0.2s;
   background: transparent;
-  border: 1px dashed #c4bdb6;
+  border: 1px dashed #6b6560;
   z-index: 1;
 }
 
@@ -305,7 +305,7 @@ body {
   font-size: 10px;
   font-weight: 500;
   line-height: 1.2;
-  color: #b0a89e;
+  color: #4a4540;
   overflow-wrap: break-word;
 }
 

@@ -306,9 +306,7 @@ body {
   font-weight: 500;
   line-height: 1.2;
   color: #5c5450;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  overflow-wrap: break-word;
 }
 
 .act-block .act-time-label {

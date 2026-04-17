@@ -100,12 +100,13 @@ function useIsMobile() {
   return isMobile;
 }
 
-function ScheduleGrid({ acts, day, hoveredActId, onHoverAct, onLeaveAct }: {
+function ScheduleGrid({ acts, day, hoveredActId, onHoverAct, onLeaveAct, nowMinutes }: {
   acts: Act[];
   day: Day;
   hoveredActId: string | null;
   onHoverAct: (id: string, scrollGrid?: boolean) => void;
   onLeaveAct: () => void;
+  nowMinutes: number | null;
 }) {
   const isMobile = useIsMobile();
   const hourPx = isMobile ? 40 : HOUR_PX;
@@ -126,21 +127,6 @@ function ScheduleGrid({ acts, day, hoveredActId, onHoverAct, onLeaveAct }: {
       headerRef.current.scrollLeft = scrollRef.current.scrollLeft;
     }
   }, []);
-
-  const [nowMinutes, setNowMinutes] = useState<number | null>(() => {
-    const { dateStr, minutes } = getLATime();
-    return dateStr === DAY_DATES[day] ? minutes : null;
-  });
-
-  useEffect(() => {
-    const update = () => {
-      const { dateStr, minutes } = getLATime();
-      setNowMinutes(dateStr === DAY_DATES[day] ? minutes : null);
-    };
-    update();
-    const id = setInterval(update, 30_000);
-    return () => clearInterval(id);
-  }, [day]);
 
   return (
     <div className="schedule-grid">
@@ -188,8 +174,7 @@ function ScheduleGrid({ acts, day, hoveredActId, onHoverAct, onLeaveAct }: {
               className="now-indicator"
               style={{ top: `${((nowMinutes - rangeStart) / 60) * hourPx}px` }}
             >
-              <div className="now-indicator-dot" />
-              <div className="now-indicator-label">{formatTime(nowMinutes)}</div>
+              <div className="now-indicator-triangle" />
             </div>
           )}
 
@@ -342,6 +327,21 @@ export default function App() {
 
   const { acts, itinerary } = allData[day];
 
+  const [nowMinutes, setNowMinutes] = useState<number | null>(() => {
+    const { dateStr, minutes } = getLATime();
+    return dateStr === DAY_DATES[day] ? minutes : null;
+  });
+
+  useEffect(() => {
+    const update = () => {
+      const { dateStr, minutes } = getLATime();
+      setNowMinutes(dateStr === DAY_DATES[day] ? minutes : null);
+    };
+    update();
+    const id = setInterval(update, 30_000);
+    return () => clearInterval(id);
+  }, [day]);
+
   return (
     <div className={`app day-${day}`}>
       <header className="app-header">
@@ -390,22 +390,40 @@ export default function App() {
             hoveredActId={hoveredActId}
             onHoverAct={onHoverAct}
             onLeaveAct={onLeaveAct}
+            nowMinutes={nowMinutes}
           />
         </div>
         <div className="divider" />
         <div className={`schedule-panel ${mobileView === 'schedule' ? 'mobile-active' : ''}`}>
           <div className="schedule-panel-header">Our Schedule</div>
           <div className="itinerary-scroll">
-            {itinerary.map((block, i) => (
-              <ItineraryItem
-                key={i}
-                block={block}
-                hoveredActId={hoveredActId}
-                onHoverAct={onHoverAct}
-                onLeaveAct={onLeaveAct}
-                acts={acts}
-              />
-            ))}
+            {(() => {
+              let nowInserted = false;
+              return itinerary.map((block, i) => {
+                const showNow = !nowInserted && nowMinutes !== null &&
+                  (i === 0 ? nowMinutes < block.start
+                    : nowMinutes >= itinerary[i - 1].start && nowMinutes < block.start);
+                if (showNow) nowInserted = true;
+                return (
+                  <div key={i}>
+                    {showNow && (
+                      <div className="it-now-line">
+                        <div className="it-now-triangle" />
+                        <div className="it-now-rule" />
+                        <span className="it-now-label">{formatTime(nowMinutes!)}</span>
+                      </div>
+                    )}
+                    <ItineraryItem
+                      block={block}
+                      hoveredActId={hoveredActId}
+                      onHoverAct={onHoverAct}
+                      onLeaveAct={onLeaveAct}
+                      acts={acts}
+                    />
+                  </div>
+                );
+              });
+            })()}
           </div>
         </div>
         {/* Mobile map view */}

@@ -970,12 +970,14 @@ body {
   .act-block.priority-must.locked.highlighted { box-shadow: 0 1px 4px rgba(180,40,40,0.25); }
   .act-block.dimmed { opacity: 1; }
   .act-block.locked.dimmed { opacity: 1; }
+  .now-indicator { left: -24px; }
 }
 
 /* ── Now indicator ── */
+/* ── Grid now-indicator ── */
 .now-indicator {
   position: absolute;
-  left: 0;
+  left: -64px;
   right: 0;
   pointer-events: none;
   z-index: 8;
@@ -986,27 +988,51 @@ body {
 .now-indicator::after {
   content: '';
   flex: 1;
-  height: 1px;
+  height: 0;
   border-top: 2px dashed #e85a4f;
   opacity: 0.85;
 }
 
-.now-indicator-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #e85a4f;
+.now-indicator-triangle {
+  width: 0;
+  height: 0;
+  border-top: 7px solid transparent;
+  border-bottom: 7px solid transparent;
+  border-left: 11px solid #e85a4f;
   flex-shrink: 0;
-  margin-right: 4px;
-  box-shadow: 0 0 4px rgba(232, 90, 79, 0.5);
 }
 
-.now-indicator-label {
+/* ── Itinerary now-line ── */
+.it-now-line {
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+  margin: 4px 0;
+  padding-left: 2px;
+}
+
+.it-now-triangle {
+  width: 0;
+  height: 0;
+  border-top: 6px solid transparent;
+  border-bottom: 6px solid transparent;
+  border-left: 9px solid #e85a4f;
+  flex-shrink: 0;
+}
+
+.it-now-rule {
+  flex: 1;
+  height: 0;
+  border-top: 2px dashed #e85a4f;
+  opacity: 0.8;
+  margin: 0 6px;
+}
+
+.it-now-label {
   font-size: 9px;
   font-weight: 700;
   letter-spacing: 0.05em;
   color: #e85a4f;
   white-space: nowrap;
-  margin-right: 6px;
   flex-shrink: 0;
 }

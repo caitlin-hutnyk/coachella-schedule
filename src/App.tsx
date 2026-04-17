@@ -1,6 +1,6 @@
 import { useState, useCallback, useRef } from 'react';
 import { allData, STAGES, STAGE_LABELS } from './data';
-import type { Day, Act, ItineraryBlock } from './data';
+import type { Day, Act, ItineraryBlock, ItineraryConflict } from './data';
 import './App.css';
 
 function formatTime(mins: number): string {
@@ -232,6 +232,25 @@ function ItineraryItem({ block, hoveredActId, onHoverAct, onLeaveAct, acts }: {
             </div>
           )}
           {block.note && <div className="it-note">{block.note}</div>}
+          {block.conflicts && block.conflicts.length > 0 && (
+            <div className="it-conflicts">
+              <div className="it-conflicts-header">
+                <span className="it-conflicts-label">also on</span>
+              </div>
+              {block.conflicts.map((c: ItineraryConflict) => (
+                <div
+                  key={c.actId}
+                  className={`it-conflict-item ${hoveredActId === c.actId ? 'conflict-highlighted' : ''}`}
+                  onMouseEnter={(e) => { e.stopPropagation(); onHoverAct(c.actId, true); }}
+                  onMouseLeave={(e) => { e.stopPropagation(); onLeaveAct(); }}
+                >
+                  <PickDot picked={acts.find(a => a.id === c.actId)?.picked} />
+                  <span className="it-conflict-name">{c.name}</span>
+                  <span className="it-conflict-detail">{c.stage} · {c.time}</span>
+                </div>
+              ))}
+            </div>
+          )}
           {block.options && block.options.length > 0 && (
             <div className="it-options">
               {block.options.map(opt => (

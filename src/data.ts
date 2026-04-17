@@ -39,7 +39,15 @@ export interface ItineraryBlock {
   stage?: string;
   note?: string;
   options?: ItineraryOption[];
+  conflicts?: ItineraryConflict[];
   who?: string;
+}
+
+export interface ItineraryConflict {
+  actId: string;
+  name: string;
+  stage: string;
+  time: string;
 }
 
 export interface ItineraryOption {
@@ -444,6 +452,9 @@ export const saturdayItinerary: ItineraryBlock[] = [
     end: t(22, 10),
     who: 'both',
     note: 'Leave ~5 min early for Worship',
+    conflicts: [
+      { actId: 's-pinkpantheress', name: 'PinkPantheress', stage: 'Mojave', time: '8:55 PM' },
+    ],
   },
   {
     type: 'act',
@@ -454,6 +465,9 @@ export const saturdayItinerary: ItineraryBlock[] = [
     end: t(23, 35),
     who: 'caitlin',
     note: '~20 min walk from Main — tight!',
+    conflicts: [
+      { actId: 's-dj-snake-knock2', name: 'DJ Snake x Knock2', stage: 'Quasar', time: '9:45 PM' },
+    ],
   },
   {
     type: 'gametime',
@@ -502,6 +516,9 @@ export const sundayItinerary: ItineraryBlock[] = [
     end: t(20, 40),
     who: 'violet',
     note: '~8 min walk from OT. Leave ~8:30 for Laufey.',
+    conflicts: [
+      { actId: 'su-sara-landry', name: "Sara Landry's Blood Oath", stage: 'Quasar', time: '8:00 PM' },
+    ],
   },
   {
     type: 'act',
@@ -512,6 +529,9 @@ export const sundayItinerary: ItineraryBlock[] = [
     end: t(21, 45),
     who: 'both',
     note: '~8 min walk from Main',
+    conflicts: [
+      { actId: 'su-sara-landry', name: "Sara Landry's Blood Oath", stage: 'Quasar', time: '8:00 PM' },
+    ],
   },
   {
     type: 'gametime',

@@ -568,6 +568,66 @@ body {
   font-style: italic;
 }
 
+/* Conflicts */
+.it-conflicts {
+  margin-top: 10px;
+}
+
+.it-conflicts-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 5px;
+}
+
+.it-conflicts-header::before,
+.it-conflicts-header::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+  opacity: 0.7;
+}
+
+.it-conflicts-label {
+  font-size: 7px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-light);
+  white-space: nowrap;
+}
+
+.it-conflict-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 4px;
+  margin: 1px -4px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.15s;
+  opacity: 0.75;
+}
+
+.it-conflict-item:hover,
+.it-conflict-item.conflict-highlighted {
+  background: rgba(0, 0, 0, 0.04);
+  opacity: 1;
+}
+
+.it-conflict-name {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--text-muted);
+  flex: 1;
+}
+
+.it-conflict-detail {
+  font-size: 9px;
+  color: var(--text-light);
+}
+
 /* Options */
 .it-options {
   margin-top: 8px;

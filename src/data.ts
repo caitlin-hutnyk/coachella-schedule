@@ -153,7 +153,7 @@ export const fridayActs: Act[] = [
   { id: 'f-dl-aeon-mode', name: 'Aeon:Mode x Blossom', stage: 'dolab', start: t(19, 10), end: t(20, 25), picked: 'caitlin', priority: 'want' },
   { id: 'f-dl-level-up', name: 'Level Up x Mary Droppinz', stage: 'dolab', start: t(20, 25), end: t(21, 40), picked: 'caitlin', priority: 'want' },
   { id: 'f-dl-lyny', name: 'LYNY', stage: 'dolab', start: t(21, 40), end: t(22, 40) },
-  { id: 'f-dl-surprise-1', name: 'SURPRISE', stage: 'dolab', start: t(22, 40), end: t(23, 50) },
+  { id: 'f-dl-surprise-1', name: 'Sub Focus', stage: 'dolab', start: t(22, 40), end: t(23, 50), picked: 'caitlin', priority: 'must' },
   { id: 'f-dl-surprise-2', name: 'SURPRISE', stage: 'dolab', start: t(23, 50), end: t(25, 0) },
 ];
 
@@ -393,16 +393,25 @@ export const fridayItinerary: ItineraryBlock[] = [
     who: 'both',
   },
   {
+    type: 'act',
+    actId: 'f-dl-surprise-1',
+    title: 'Sub Focus',
+    stage: 'Do LaB',
+    start: t(22, 40),
+    end: t(23, 50),
+    who: 'caitlin',
+    note: '~5 min walk from Gobi',
+  },
+  {
     type: 'gametime',
-    title: 'Pick a closer or head home',
-    start: t(22, 35),
+    title: 'Stay or head home',
+    start: t(23, 50),
     end: t(25, 0),
     options: [
-      { actId: 'f-disclosure', name: 'Disclosure', stage: 'OT', time: '10:40 PM', who: 'caitlin', tentative: true },
-      { actId: 'f-ethel-cain', name: 'Ethel Cain', stage: 'Mojave', time: '10:45 PM', who: 'violet' },
       { actId: 'f-anyma', name: 'Anyma', stage: 'Main', time: '12:00 AM', who: 'caitlin', tentative: true },
       { actId: 'f-blood-orange', name: 'Blood Orange', stage: 'Mojave', time: '12:00 AM', who: 'caitlin' },
       { actId: 'f-sexyy-red', name: 'Sexyy Red', stage: 'Sahara', time: '12:05 AM', who: 'violet' },
+      { actId: 'f-dl-surprise-2', name: 'Do LaB SURPRISE', stage: 'Do LaB', time: '11:50 PM', who: 'caitlin' },
     ],
   },
 ];

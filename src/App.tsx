@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import { allData, STAGES, STAGE_LABELS } from './data';
 import type { Day, Act, ItineraryBlock, ItineraryConflict } from './data';
 import './App.css';
@@ -33,6 +33,28 @@ const DAY_LABELS: Record<Day, string> = {
 };
 
 const HOUR_PX = 80;
+
+const DAY_DATES: Record<Day, string> = {
+  friday: '2026-04-17',
+  saturday: '2026-04-18',
+  sunday: '2026-04-19',
+};
+
+function getLATime(): { dateStr: string; minutes: number } {
+  const now = new Date();
+  const parts = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'America/Los_Angeles',
+    year: 'numeric', month: '2-digit', day: '2-digit',
+    hour: '2-digit', minute: '2-digit', hour12: false,
+  }).formatToParts(now);
+  const get = (type: string) => parts.find(p => p.type === type)?.value ?? '0';
+  const h = parseInt(get('hour'));
+  const m = parseInt(get('minute'));
+  return {
+    dateStr: `${get('year')}-${get('month')}-${get('day')}`,
+    minutes: h * 60 + m,
+  };
+}
 
 function ActBlock({ act, rangeStart, highlighted, dimmed, onHover, onLeave, hourPx }: {
   act: Act;
@@ -105,6 +127,21 @@ function ScheduleGrid({ acts, day, hoveredActId, onHoverAct, onLeaveAct }: {
     }
   }, []);
 
+  const [nowMinutes, setNowMinutes] = useState<number | null>(() => {
+    const { dateStr, minutes } = getLATime();
+    return dateStr === DAY_DATES[day] ? minutes : null;
+  });
+
+  useEffect(() => {
+    const update = () => {
+      const { dateStr, minutes } = getLATime();
+      setNowMinutes(dateStr === DAY_DATES[day] ? minutes : null);
+    };
+    update();
+    const id = setInterval(update, 30_000);
+    return () => clearInterval(id);
+  }, [day]);
+
   return (
     <div className="schedule-grid">
       <div className="grid-header" ref={headerRef}>
@@ -145,6 +182,16 @@ function ScheduleGrid({ acts, day, hoveredActId, onHoverAct, onLeaveAct }: {
               style={{ top: `${((h * 60 - rangeStart) / 60) * hourPx}px` }}
             />
           ))}
+
+          {nowMinutes !== null && nowMinutes >= rangeStart && nowMinutes <= rangeEnd && (
+            <div
+              className="now-indicator"
+              style={{ top: `${((nowMinutes - rangeStart) / 60) * hourPx}px` }}
+            >
+              <div className="now-indicator-dot" />
+              <div className="now-indicator-label">{formatTime(nowMinutes)}</div>
+            </div>
+          )}
 
           <div className="stage-columns">
             {STAGES.map(stage => (

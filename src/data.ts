@@ -153,7 +153,7 @@ export const fridayActs: Act[] = [
   { id: 'f-dl-aeon-mode', name: 'Aeon:Mode x Blossom', stage: 'dolab', start: t(19, 10), end: t(20, 25), picked: 'caitlin', priority: 'want' },
   { id: 'f-dl-level-up', name: 'Level Up x Mary Droppinz', stage: 'dolab', start: t(20, 25), end: t(21, 40), picked: 'caitlin', priority: 'want' },
   { id: 'f-dl-lyny', name: 'LYNY', stage: 'dolab', start: t(21, 40), end: t(22, 40) },
-  { id: 'f-dl-surprise-1', name: 'Sub Focus', stage: 'dolab', start: t(22, 40), end: t(23, 50), picked: 'caitlin', priority: 'must' },
+  { id: 'f-dl-surprise-1', name: 'Sub Focus', stage: 'dolab', start: t(22, 40), end: t(23, 50), picked: 'caitlin', priority: 'must', locked: true },
   { id: 'f-dl-surprise-2', name: 'SURPRISE', stage: 'dolab', start: t(23, 50), end: t(25, 0) },
 ];
 

@@ -402,17 +402,6 @@ body {
   color: rgba(255,255,255,0.7);
 }
 
-.must-badge {
-  position: absolute;
-  top: 2px;
-  right: 14px;
-  font-size: 9px;
-  color: var(--must-ring);
-}
-
-.act-block.locked .must-badge {
-  color: rgba(255,255,255,0.85);
-}
 
 /* ── Hover: subtle ring, no scroll, no scale ── */
 .act-block.highlighted {
@@ -974,7 +963,6 @@ body {
   .act-block .act-name { font-size: 6px; line-height: 1.1; }
   .act-block .act-time-label { display: none; }
   .locked-badge { font-size: 6px; top: 1px; right: 1px; }
-  .must-badge { font-size: 6px; top: 1px; right: 8px; }
 
   /* ── Disable hover effects on touch ── */
   .act-block.highlighted { box-shadow: none; z-index: 1; }

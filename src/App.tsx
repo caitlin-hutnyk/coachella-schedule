@@ -64,7 +64,6 @@ function ActBlock({ act, rangeStart, highlighted, dimmed, onHover, onLeave, hour
         <div className="act-time-label">{formatTimeShort(act.start)}-{formatTimeShort(act.end)}</div>
       )}
       {act.locked && <div className="locked-badge">✓</div>}
-      {act.priority === 'must' && <div className="must-badge">★</div>}
     </div>
   );
 }

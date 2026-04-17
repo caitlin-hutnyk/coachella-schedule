@@ -430,6 +430,9 @@ export const saturdayItinerary: ItineraryBlock[] = [
     end: t(19, 0),
     who: 'violet',
     note: 'Arrive early',
+    conflicts: [
+      { actId: 's-yuki', name: '¥ØUSUK€ ¥UK1MAT$U', stage: 'Sahara', time: '6:15 PM' },
+    ],
   },
   {
     type: 'food',
@@ -531,6 +534,7 @@ export const sundayItinerary: ItineraryBlock[] = [
     note: '~8 min walk from Main',
     conflicts: [
       { actId: 'su-sara-landry', name: "Sara Landry's Blood Oath", stage: 'Quasar', time: '8:00 PM' },
+      { actId: 'su-subtronics', name: 'Subtronics', stage: 'Sahara', time: '9:05 PM' },
     ],
   },
   {
@@ -539,7 +543,6 @@ export const sundayItinerary: ItineraryBlock[] = [
     start: t(21, 45),
     end: t(24, 0),
     options: [
-      { actId: 'su-subtronics', name: 'Subtronics', stage: 'Sahara', time: '9:05 PM', who: 'caitlin' },
       { actId: 'su-karol-g', name: 'KAROL G', stage: 'Main', time: '10:10 PM', who: 'caitlin' },
       { actId: 'su-kaskade', name: 'Kaskade', stage: 'Sahara', time: '10:50 PM', who: 'caitlin', tentative: true },
     ],

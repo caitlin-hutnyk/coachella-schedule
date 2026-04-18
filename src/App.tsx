@@ -33,6 +33,55 @@ const DAY_LABELS: Record<Day, string> = {
   sunday: 'SUNDAY',
 };
 
+const DAYS: Day[] = ['friday', 'saturday', 'sunday'];
+
+function isZoomedOut() {
+  const vv = window.visualViewport;
+  return !vv || vv.scale <= 1.05;
+}
+
+function useSwipeDay(
+  day: Day,
+  setDay: (d: Day) => void,
+  scrollElRef?: React.RefObject<HTMLDivElement | null>,
+) {
+  const startX = useRef<number | null>(null);
+  const startY = useRef<number | null>(null);
+  const startScroll = useRef<{ left: number; maxLeft: number } | null>(null);
+
+  const onTouchStart = useCallback((e: React.TouchEvent) => {
+    if (!isZoomedOut()) return;
+    startX.current = e.touches[0].clientX;
+    startY.current = e.touches[0].clientY;
+    if (scrollElRef?.current) {
+      const el = scrollElRef.current;
+      startScroll.current = { left: el.scrollLeft, maxLeft: el.scrollWidth - el.clientWidth };
+    }
+  }, [scrollElRef]);
+
+  const onTouchEnd = useCallback((e: React.TouchEvent) => {
+    if (startX.current === null || !isZoomedOut()) { startX.current = null; return; }
+    const dx = e.changedTouches[0].clientX - startX.current;
+    const dy = e.changedTouches[0].clientY - (startY.current ?? 0);
+    startX.current = null;
+    startY.current = null;
+    const scroll = startScroll.current;
+    startScroll.current = null;
+
+    if (Math.abs(dx) < 60 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
+    if (scroll) {
+      if (dx < 0 && scroll.left < scroll.maxLeft - 5) return;
+      if (dx > 0 && scroll.left > 5) return;
+    }
+
+    const idx = DAYS.indexOf(day);
+    if (dx < 0 && idx < DAYS.length - 1) setDay(DAYS[idx + 1]);
+    else if (dx > 0 && idx > 0) setDay(DAYS[idx - 1]);
+  }, [day, setDay]);
+
+  return { onTouchStart, onTouchEnd };
+}
+
 const HOUR_PX = 80;
 
 const DAY_DATES: Record<Day, string> = {
@@ -123,13 +172,14 @@ function useIsMobile() {
   return isMobile;
 }
 
-function ScheduleGrid({ acts, day, hoveredActId, onHoverAct, onLeaveAct, nowMinutes }: {
+function ScheduleGrid({ acts, day, hoveredActId, onHoverAct, onLeaveAct, nowMinutes, scrollRef }: {
   acts: Act[];
   day: Day;
   hoveredActId: string | null;
   onHoverAct: (id: string, scrollGrid?: boolean) => void;
   onLeaveAct: () => void;
   nowMinutes: number | null;
+  scrollRef: React.RefObject<HTMLDivElement | null>;
 }) {
   const isMobile = useIsMobile();
   const hourPx = isMobile ? 40 : HOUR_PX;
@@ -143,13 +193,12 @@ function ScheduleGrid({ acts, day, hoveredActId, onHoverAct, onLeaveAct, nowMinu
   }
 
   const headerRef = useRef<HTMLDivElement>(null);
-  const scrollRef = useRef<HTMLDivElement>(null);
 
   const onGridScroll = useCallback(() => {
     if (headerRef.current && scrollRef.current) {
       headerRef.current.scrollLeft = scrollRef.current.scrollLeft;
     }
-  }, []);
+  }, [scrollRef]);
 
   return (
     <div className="schedule-grid">
@@ -342,6 +391,15 @@ export default function App() {
   const [mobileView, setMobileView] = useState<'grid' | 'schedule' | 'map'>('schedule');
   const [showMap, setShowMap] = useState(false);
   const gridRef = useRef<HTMLDivElement>(null);
+  const gridScrollRef = useRef<HTMLDivElement>(null);
+
+  const handleDayChange = useCallback((d: Day) => {
+    setDay(d);
+    setHoveredActId(null);
+  }, []);
+
+  const planSwipe = useSwipeDay(day, handleDayChange);
+  const gridSwipe = useSwipeDay(day, handleDayChange, gridScrollRef);
 
   const onHoverAct = useCallback((id: string, scrollGrid?: boolean) => {
     setHoveredActId(id);
@@ -439,7 +497,7 @@ export default function App() {
             <button
               key={d}
               className={`day-tab ${d === day ? 'active' : ''}`}
-              onClick={() => { setDay(d); setHoveredActId(null); }}
+              onClick={() => handleDayChange(d)}
             >
               {DAY_LABELS[d]}
             </button>
@@ -458,7 +516,7 @@ export default function App() {
       </div>
 
       <div className="main-content" ref={gridRef}>
-        <div className={`grid-panel ${mobileView === 'grid' ? 'mobile-active' : ''}`}>
+        <div className={`grid-panel ${mobileView === 'grid' ? 'mobile-active' : ''}`} {...gridSwipe}>
           <ScheduleGrid
             acts={acts}
             day={day}
@@ -466,10 +524,11 @@ export default function App() {
             onHoverAct={onHoverAct}
             onLeaveAct={onLeaveAct}
             nowMinutes={nowMinutes}
+            scrollRef={gridScrollRef}
           />
         </div>
         <div className="divider" />
-        <div className={`schedule-panel ${mobileView === 'schedule' ? 'mobile-active' : ''}`}>
+        <div className={`schedule-panel ${mobileView === 'schedule' ? 'mobile-active' : ''}`} {...planSwipe}>
           <div className="schedule-panel-header">Our Plan</div>
           <div className="itinerary-scroll" ref={itineraryScrollRef}>
             {itinerary.map((block, i) => (

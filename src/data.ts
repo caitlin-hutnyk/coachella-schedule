@@ -198,7 +198,7 @@ export const saturdayActs: Act[] = [
   // Mojave
   { id: 's-kacey', name: 'Kacey Musgraves', stage: 'mojave', start: t(15, 0), end: t(15, 50), picked: 'violet', priority: 'want' },
   { id: 's-fujii-kaze', name: 'Fujii Kaze', stage: 'mojave', start: t(16, 30), end: t(17, 20) },
-  { id: 's-royel-otis', name: 'Royel Otis', stage: 'mojave', start: t(17, 50), end: t(18, 35), picked: 'both', priority: 'must', locked: true },
+  { id: 's-royel-otis', name: 'Royel Otis', stage: 'mojave', start: t(17, 50), end: t(18, 35), picked: 'both', locked: true },
   { id: 's-taemin', name: 'Taemin', stage: 'mojave', start: t(19, 30), end: t(20, 20) },
   { id: 's-pinkpantheress', name: 'PinkPantheress', stage: 'mojave', start: t(20, 55), end: t(21, 45), picked: 'both', priority: 'want' },
   { id: 's-interpol', name: 'Interpol', stage: 'mojave', start: t(22, 15), end: t(23, 15) },

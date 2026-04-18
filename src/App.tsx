@@ -427,7 +427,7 @@ export default function App() {
               value={mobileView}
               onValueChange={v => setMobileView(v as typeof mobileView)}
               options={[
-                { value: 'schedule', label: 'Schedule' },
+                { value: 'schedule', label: 'Plan' },
                 { value: 'grid', label: 'Lineup' },
                 { value: 'map', label: 'Map' },
               ]}
@@ -470,7 +470,7 @@ export default function App() {
         </div>
         <div className="divider" />
         <div className={`schedule-panel ${mobileView === 'schedule' ? 'mobile-active' : ''}`}>
-          <div className="schedule-panel-header">Our Schedule</div>
+          <div className="schedule-panel-header">Our Plan</div>
           <div className="itinerary-scroll" ref={itineraryScrollRef}>
             {itinerary.map((block, i) => (
               <ItineraryItem

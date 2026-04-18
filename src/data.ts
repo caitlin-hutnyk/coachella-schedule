@@ -497,6 +497,7 @@ export const saturdayItinerary: ItineraryBlock[] = [
     note: '~20 min walk from Main — tight!',
     conflicts: [
       { actId: 's-dj-snake-knock2', name: 'DJ Snake x Knock2', stage: 'Quasar', time: '9:45 PM' },
+      { actId: 's-dl-after-midnight', name: 'AFTER MIDNIGHT (Matroda x San Pacho)', stage: 'Do LaB', time: '10:35 PM' },
     ],
   },
   {
@@ -505,9 +506,9 @@ export const saturdayItinerary: ItineraryBlock[] = [
     start: t(23, 35),
     end: t(24, 30),
     options: [
-      { actId: 's-dl-after-midnight', name: 'AFTER MIDNIGHT (Matroda x San Pacho)', stage: 'Do LaB', time: '10:35 PM', who: 'caitlin' },
       { actId: 's-armin-sat', name: 'Armin van Buuren x Adam Beyer', stage: 'Yuma', time: '11:00 PM', who: 'caitlin' },
       { actId: 's-justin-bieber', name: 'Justin Bieber', stage: 'Main', time: '11:25 PM', who: 'caitlin' },
+      { actId: 's-dl-surprise', name: 'Do LaB SURPRISE', stage: 'Do LaB', time: '11:50 PM', who: 'caitlin' },
     ],
   },
 ];

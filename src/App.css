@@ -852,30 +852,60 @@ body {
   .header-brand { font-size: 16px; letter-spacing: 3px; }
   .day-tab { padding: 5px 12px; font-size: 11px; letter-spacing: 1.5px; }
 
-  /* ── Mobile view tabs (top right) ── */
-  .mobile-view-tabs {
+  /* ── Mobile view select ── */
+  .mobile-view-tabs { display: flex; align-items: center; }
+
+  .view-select-trigger {
     display: flex;
-    gap: 2px;
-    background: var(--bg);
-    border-radius: 8px;
-    padding: 2px;
-  }
-  .view-tab {
+    align-items: center;
+    gap: 5px;
     padding: 6px 10px;
+    background: rgba(0,0,0,0.07);
     border: none;
-    background: transparent;
+    border-radius: 8px;
     font-family: 'DM Sans', sans-serif;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 600;
-    color: var(--text-muted);
-    border-radius: 6px;
+    color: var(--text);
     cursor: pointer;
     -webkit-tap-highlight-color: transparent;
-    transition: all 0.15s;
+    outline: none;
   }
-  .view-tab.active {
-    background: var(--day-fill);
-    color: white;
+  .view-select-trigger:focus-visible {
+    box-shadow: 0 0 0 2px var(--day-fill);
+  }
+
+  .view-select-content {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 4px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.14);
+    min-width: 130px;
+    z-index: 999;
+  }
+
+  .view-select-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    border-radius: 6px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    cursor: pointer;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .view-select-item[data-highlighted] {
+    background: var(--day-tint);
+    color: var(--day-fill);
+  }
+  .view-select-item[data-state="checked"] {
+    font-weight: 700;
+    color: var(--day-fill);
   }
 
   /* ── Layout: stack, toggle panels ── */

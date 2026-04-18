@@ -1,6 +1,7 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { allData, STAGES, STAGE_LABELS } from './data';
 import type { Day, Act, ItineraryBlock, ItineraryConflict } from './data';
+import { Select } from './components/Select';
 import './App.css';
 
 function formatTime(mins: number): string {
@@ -418,9 +419,15 @@ export default function App() {
           </div>
           {/* Mobile: view switcher */}
           <div className="mobile-view-tabs mobile-only">
-            <button className={`view-tab ${mobileView === 'schedule' ? 'active' : ''}`} onClick={() => setMobileView('schedule')}>Schedule</button>
-            <button className={`view-tab ${mobileView === 'grid' ? 'active' : ''}`} onClick={() => setMobileView('grid')}>Lineup</button>
-            <button className={`view-tab ${mobileView === 'map' ? 'active' : ''}`} onClick={() => setMobileView('map')}>Map</button>
+            <Select
+              value={mobileView}
+              onValueChange={v => setMobileView(v as typeof mobileView)}
+              options={[
+                { value: 'schedule', label: 'Schedule' },
+                { value: 'grid', label: 'Lineup' },
+                { value: 'map', label: 'Map' },
+              ]}
+            />
           </div>
         </div>
         <nav className="day-tabs">

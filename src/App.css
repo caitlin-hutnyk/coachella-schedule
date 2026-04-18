@@ -693,7 +693,7 @@ body {
 
 /* ── Locked itinerary items: always blue, regardless of day ── */
 .itinerary-item.it-locked .it-card {
-  background: white;
+  background: #f0f6ff;
   border: 3px solid #3678c2;
 }
 
@@ -710,7 +710,7 @@ body {
 }
 
 .itinerary-item.it-must-see .it-card {
-  background: white;
+  background: #fef5f5;
   border: 3px solid #d94545;
 }
 

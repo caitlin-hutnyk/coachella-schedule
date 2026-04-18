@@ -241,7 +241,7 @@ export const saturdayActs: Act[] = [
   { id: 's-dl-gudfella', name: 'GUDFELLA', stage: 'dolab', start: t(20, 35), end: t(21, 35) },
   { id: 's-dl-seth-troxler', name: 'Seth Troxler', stage: 'dolab', start: t(21, 35), end: t(22, 35) },
   { id: 's-dl-after-midnight', name: 'AFTER MIDNIGHT (Matroda x San Pacho)', stage: 'dolab', start: t(22, 35), end: t(23, 45), picked: 'caitlin', priority: 'want' },
-  { id: 's-dl-surprise', name: 'SURPRISE', stage: 'dolab', start: t(23, 50), end: t(25, 0) },
+  { id: 's-dl-surprise', name: 'Ben Sterling B2B Max Dean', stage: 'dolab', start: t(23, 50), end: t(25, 0) },
 ];
 
 // ============================================================
@@ -508,7 +508,7 @@ export const saturdayItinerary: ItineraryBlock[] = [
     options: [
       { actId: 's-armin-sat', name: 'Armin van Buuren x Adam Beyer', stage: 'Yuma', time: '11:00 PM', who: 'caitlin' },
       { actId: 's-justin-bieber', name: 'Justin Bieber', stage: 'Main', time: '11:25 PM', who: 'caitlin' },
-      { actId: 's-dl-surprise', name: 'Do LaB SURPRISE', stage: 'Do LaB', time: '11:50 PM', who: 'caitlin' },
+      { actId: 's-dl-surprise', name: 'Ben Sterling B2B Max Dean', stage: 'Do LaB', time: '11:50 PM', who: 'caitlin' },
     ],
   },
 ];

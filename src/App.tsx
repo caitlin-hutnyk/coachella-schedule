@@ -628,6 +628,9 @@ export default function App() {
   const itineraryScrollRef = useRef<HTMLDivElement>(null);
   const [nowLineTop, setNowLineTop] = useState<number | null>(null);
 
+  // Clear now-line before paint on day change so stale position never renders
+  useLayoutEffect(() => { setNowLineTop(null); }, [day]);
+
   useEffect(() => {
     const el = itineraryScrollRef.current;
     if (!el || nowMinutes === null) { setNowLineTop(null); return; }

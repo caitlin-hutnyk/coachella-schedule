@@ -461,7 +461,6 @@ export const saturdayItinerary: ItineraryBlock[] = [
     options: [
       { actId: 's-sosa', name: 'SOSA', stage: 'Yuma', time: '6:45 PM', who: 'caitlin' },
       { actId: 's-giveon', name: 'GIVĒON', stage: 'Main', time: '7:00 PM', who: 'violet' },
-      { actId: 's-nine-inch', name: 'Nine Inch Noize', stage: 'Sahara', time: '8:00 PM', who: 'caitlin' },
     ],
   },
   {

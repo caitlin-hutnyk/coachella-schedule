@@ -116,7 +116,7 @@ body {
   color: var(--day-accent);
 }
 
-.day-tabs { display: flex; gap: 4px; }
+.day-tabs { display: flex; gap: 4px; position: relative; }
 
 .day-tab {
   padding: 8px 20px;
@@ -129,11 +129,20 @@ body {
   color: var(--text-muted);
   cursor: pointer;
   border-bottom: 2px solid transparent;
-  transition: all 0.2s;
+  transition: color 0.2s;
 }
 
 .day-tab:hover { color: var(--text); }
-.day-tab.active { color: var(--day-accent); border-bottom-color: var(--day-accent); }
+.day-tab.active { color: var(--day-accent); }
+
+.tab-indicator {
+  position: absolute;
+  bottom: 0;
+  height: 2px;
+  background: var(--day-accent);
+  pointer-events: none;
+  transition: none;
+}
 
 /* ──── Legend ──── */
 .legend-bar {

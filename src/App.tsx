@@ -42,10 +42,6 @@ const DAY_ACCENTS: Record<Day, string> = {
 };
 const TEXT_MUTED = '#8a7d6b';
 
-function hexToRgbStr(hex: string): string {
-  return `${parseInt(hex.slice(1,3),16)},${parseInt(hex.slice(3,5),16)},${parseInt(hex.slice(5,7),16)}`;
-}
-
 function lerpHex(a: string, b: string, t: number): string {
   const ar=parseInt(a.slice(1,3),16),ag=parseInt(a.slice(3,5),16),ab=parseInt(a.slice(5,7),16);
   const br=parseInt(b.slice(1,3),16),bg=parseInt(b.slice(3,5),16),bb=parseInt(b.slice(5,7),16);
@@ -516,8 +512,10 @@ export default function App() {
     const progress = Math.min(Math.abs(dx) / pw, 1);
     const curIdx = DAYS.indexOf(day);
     const targetIdx = dx > 0 ? curIdx - 1 : curIdx + 1;
-    const targetDay: Day | null = DAYS[targetIdx] ?? null;
+    const targetDay: Day | null = dx !== 0 ? (DAYS[targetIdx] ?? null) : null;
+    const isDayChange = dx === 0 && !instant;
 
+    // Background overlay
     const overlay = bgOverlayRef.current;
     if (overlay) {
       overlay.style.transition = instant ? 'opacity 0.28s ease' : 'none';
@@ -528,20 +526,57 @@ export default function App() {
     const nav = dayTabsRef.current;
     if (nav) {
       const tabs = nav.querySelectorAll<HTMLElement>('.day-tab');
+      const indicator = nav.querySelector<HTMLElement>('.tab-indicator');
+      const navRect = nav.getBoundingClientRect();
+      const curTab = tabs[curIdx] as HTMLElement | undefined;
+      const tgtTab = targetDay ? tabs[targetIdx] as HTMLElement | undefined : undefined;
+      const curAccent = DAY_ACCENTS[day];
+      const tgtAccent = targetDay ? DAY_ACCENTS[targetDay] : null;
+
+      // Sliding indicator
+      if (indicator && curTab) {
+        indicator.style.transition = instant ? 'left 0.28s ease, width 0.28s ease' : 'none';
+        const curRect = curTab.getBoundingClientRect();
+        const curL = curRect.left - navRect.left;
+        const curW = curRect.width;
+        if (tgtTab && progress > 0) {
+          const tgtRect = tgtTab.getBoundingClientRect();
+          indicator.style.left = `${curL + (tgtRect.left - navRect.left - curL) * progress}px`;
+          indicator.style.width = `${curW + (tgtRect.width - curW) * progress}px`;
+        } else {
+          indicator.style.left = `${curL}px`;
+          indicator.style.width = `${curW}px`;
+        }
+      }
+
+      // Tab text — always suppress CSS transitions to avoid re-render flash
       tabs.forEach((tab, i) => {
-        tab.style.transition = instant ? '' : 'none';
+        tab.style.transition = 'none';
         if (i === curIdx && progress > 0) {
-          tab.style.color = lerpHex(DAY_ACCENTS[day], TEXT_MUTED, progress);
-          tab.style.borderBottomColor = `rgba(${hexToRgbStr(DAY_ACCENTS[day])},${1 - progress})`;
-        } else if (targetDay && i === targetIdx && progress > 0) {
-          tab.style.color = lerpHex(TEXT_MUTED, DAY_ACCENTS[targetDay], progress);
-          tab.style.borderBottomColor = `rgba(${hexToRgbStr(DAY_ACCENTS[targetDay])},${progress})`;
+          tab.style.color = lerpHex(curAccent, TEXT_MUTED, progress);
+        } else if (tgtAccent && i === targetIdx && progress > 0) {
+          tab.style.color = lerpHex(TEXT_MUTED, tgtAccent, progress);
         } else {
           tab.style.color = '';
-          tab.style.borderBottomColor = '';
-          tab.style.transition = '';
         }
       });
+
+      // Restore CSS transitions after current frame
+      if (isDayChange) {
+        // Day change: instant reset, restore in next frame
+        requestAnimationFrame(() => {
+          nav.querySelectorAll<HTMLElement>('.day-tab').forEach(t => { t.style.transition = ''; });
+          nav.querySelector<HTMLElement>('.tab-indicator')?.style.setProperty('transition', '');
+        });
+      } else if (instant) {
+        // Snap-back: tabs restore in next frame; indicator restores after its animation
+        requestAnimationFrame(() => {
+          nav.querySelectorAll<HTMLElement>('.day-tab').forEach(t => { t.style.transition = ''; });
+        });
+        indicator?.addEventListener('transitionend', () => {
+          indicator.style.transition = '';
+        }, { once: true });
+      }
     }
   }, [day]);
 
@@ -653,6 +688,7 @@ export default function App() {
               {DAY_LABELS[d]}
             </button>
           ))}
+          <div className="tab-indicator" />
         </nav>
       </header>
 

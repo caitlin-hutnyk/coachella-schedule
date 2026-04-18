@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, useEffect } from 'react';
+import { useState, useCallback, useRef, useEffect, useLayoutEffect } from 'react';
 import { allData, STAGES, STAGE_LABELS } from './data';
 import type { Day, Act, ItineraryBlock, ItineraryConflict } from './data';
 import { Select } from './components/Select';
@@ -160,6 +160,73 @@ function ActBlock({ act, rangeStart, highlighted, dimmed, onHover, onLeave, hour
       {act.locked && <div className="locked-badge">✓</div>}
     </div>
   );
+}
+
+const noop = () => {};
+
+function useSwipePager(day: Day, setDay: (d: Day) => void) {
+  const stripRef = useRef<HTMLDivElement>(null);
+  const touchStartX = useRef<number | null>(null);
+  const isAnimating = useRef(false);
+
+  const getPageWidth = () => stripRef.current?.parentElement?.offsetWidth ?? window.innerWidth;
+
+  const applyTransform = (offset: number, animate: boolean) => {
+    const el = stripRef.current;
+    if (!el) return;
+    el.style.transition = animate ? 'transform 0.28s cubic-bezier(0.25, 0.46, 0.45, 0.94)' : 'none';
+    el.style.transform = `translateX(${-getPageWidth() + offset}px)`;
+  };
+
+  // Reset to center after day changes (from swipe or tab click), before browser paints
+  useLayoutEffect(() => {
+    applyTransform(0, false);
+    isAnimating.current = false;
+    touchStartX.current = null;
+  }, [day]);
+
+  const idx = DAYS.indexOf(day);
+
+  const onTouchStart = useCallback((e: React.TouchEvent) => {
+    if (!isZoomedOut() || isAnimating.current) return;
+    touchStartX.current = e.touches[0].clientX;
+  }, []);
+
+  const onTouchMove = useCallback((e: React.TouchEvent) => {
+    if (touchStartX.current === null) return;
+    let dx = e.touches[0].clientX - touchStartX.current;
+    // Rubber-band at edges
+    if (dx > 0 && idx === 0) dx *= 0.15;
+    else if (dx < 0 && idx === DAYS.length - 1) dx *= 0.15;
+    applyTransform(dx, false);
+  }, [idx]);
+
+  const onTouchEnd = useCallback((e: React.TouchEvent) => {
+    if (touchStartX.current === null) return;
+    const dx = e.changedTouches[0].clientX - touchStartX.current;
+    touchStartX.current = null;
+    const pw = getPageWidth();
+    const threshold = pw * 0.3;
+
+    if (dx < -threshold && idx < DAYS.length - 1) {
+      isAnimating.current = true;
+      applyTransform(-pw, true);
+      // After animation, change day — useLayoutEffect resets transform before paint
+      stripRef.current?.addEventListener('transitionend', () => {
+        setDay(DAYS[idx + 1]);
+      }, { once: true });
+    } else if (dx > threshold && idx > 0) {
+      isAnimating.current = true;
+      applyTransform(pw, true);
+      stripRef.current?.addEventListener('transitionend', () => {
+        setDay(DAYS[idx - 1]);
+      }, { once: true });
+    } else {
+      applyTransform(0, true);
+    }
+  }, [idx, setDay]);
+
+  return { stripRef, onTouchStart, onTouchMove, onTouchEnd };
 }
 
 function useIsMobile() {
@@ -398,8 +465,12 @@ export default function App() {
     setHoveredActId(null);
   }, []);
 
-  const planSwipe = useSwipeDay(day, handleDayChange);
   const gridSwipe = useSwipeDay(day, handleDayChange, gridScrollRef);
+  const { stripRef, onTouchStart: planTouchStart, onTouchMove: planTouchMove, onTouchEnd: planTouchEnd } = useSwipePager(day, handleDayChange);
+
+  const idx = DAYS.indexOf(day);
+  const prevDay = idx > 0 ? DAYS[idx - 1] : null;
+  const nextDay = idx < DAYS.length - 1 ? DAYS[idx + 1] : null;
 
   const onHoverAct = useCallback((id: string, scrollGrid?: boolean) => {
     setHoveredActId(id);
@@ -528,24 +599,31 @@ export default function App() {
           />
         </div>
         <div className="divider" />
-        <div className={`schedule-panel ${mobileView === 'schedule' ? 'mobile-active' : ''}`} {...planSwipe}>
+        <div className={`schedule-panel ${mobileView === 'schedule' ? 'mobile-active' : ''}`}>
           <div className="schedule-panel-header">Our Plan</div>
-          <div className="itinerary-scroll" ref={itineraryScrollRef}>
-            {itinerary.map((block, i) => (
-              <ItineraryItem
-                key={i}
-                block={block}
-                hoveredActId={hoveredActId}
-                onHoverAct={onHoverAct}
-                onLeaveAct={onLeaveAct}
-                acts={acts}
-              />
-            ))}
-            {nowLineTop !== null && (
-              <div className="now-indicator" style={{ top: `${nowLineTop}px` }}>
-                <div className="now-indicator-triangle" />
+          <div className="plan-pager" onTouchStart={planTouchStart} onTouchMove={planTouchMove} onTouchEnd={planTouchEnd}>
+            <div className="plan-strip" ref={stripRef}>
+              <div className="plan-page">
+                {prevDay && allData[prevDay].itinerary.map((block, i) => (
+                  <ItineraryItem key={i} block={block} hoveredActId={null} onHoverAct={noop} onLeaveAct={noop} acts={allData[prevDay].acts} />
+                ))}
               </div>
-            )}
+              <div className="plan-page" ref={itineraryScrollRef}>
+                {itinerary.map((block, i) => (
+                  <ItineraryItem key={i} block={block} hoveredActId={hoveredActId} onHoverAct={onHoverAct} onLeaveAct={onLeaveAct} acts={acts} />
+                ))}
+                {nowLineTop !== null && (
+                  <div className="now-indicator" style={{ top: `${nowLineTop}px` }}>
+                    <div className="now-indicator-triangle" />
+                  </div>
+                )}
+              </div>
+              <div className="plan-page">
+                {nextDay && allData[nextDay].itinerary.map((block, i) => (
+                  <ItineraryItem key={i} block={block} hoveredActId={null} onHoverAct={noop} onLeaveAct={noop} acts={allData[nextDay].acts} />
+                ))}
+              </div>
+            </div>
           </div>
         </div>
         {/* Mobile map view */}

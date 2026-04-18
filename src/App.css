@@ -196,9 +196,28 @@ body {
   flex-shrink: 0;
 }
 
-.itinerary-scroll {
+.plan-pager {
   flex: 1;
+  overflow: hidden;
+  min-height: 0;
+  touch-action: pan-y;
+}
+
+.plan-strip {
+  display: flex;
+  width: 300%;
+  height: 100%;
+  transform: translateX(-33.333%);
+  will-change: transform;
+}
+
+.plan-page {
+  width: 33.333%;
+  flex-shrink: 0;
+  height: 100%;
   overflow-y: auto;
+  overflow-x: hidden;
+  position: relative;
   padding: 8px 0 40px;
 }
 
@@ -741,16 +760,16 @@ body {
 
 /* Scrollbars */
 .grid-scroll::-webkit-scrollbar,
-.itinerary-scroll::-webkit-scrollbar { width: 6px; }
+.plan-page::-webkit-scrollbar { width: 6px; }
 
 .grid-scroll::-webkit-scrollbar-track,
-.itinerary-scroll::-webkit-scrollbar-track { background: transparent; }
+.plan-page::-webkit-scrollbar-track { background: transparent; }
 
 .grid-scroll::-webkit-scrollbar-thumb,
-.itinerary-scroll::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+.plan-page::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 
 .grid-scroll::-webkit-scrollbar-thumb:hover,
-.itinerary-scroll::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+.plan-page::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
 
 /* ════════════════════════════════════
    Desktop-only / Mobile-only helpers
@@ -927,7 +946,7 @@ body {
   /* ── Schedule panel: full width ── */
   .schedule-panel-header { display: none; }
   .schedule-panel.mobile-active { background: transparent; }
-  .itinerary-scroll { padding: 4px 0 calc(80px + env(safe-area-inset-bottom, 0px)); }
+  .plan-page { padding: 4px 0 calc(80px + env(safe-area-inset-bottom, 0px)); }
   .itinerary-item { padding: 0 10px; }
   .it-time-col { width: 50px; padding-right: 6px; }
   .it-time { font-size: 9px; }
@@ -1030,5 +1049,5 @@ body {
 /* Grid: extend left to reach edge of scroll container */
 .grid-body .now-indicator { left: -64px; }
 
-/* Schedule: scroll container needs relative positioning */
-.itinerary-scroll { position: relative; }
+/* Schedule: now-indicator is positioned relative to the scroll page */
+.plan-page { position: relative; }

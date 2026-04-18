@@ -1,4 +1,5 @@
 import { useState, useCallback, useRef, useEffect, useLayoutEffect } from 'react';
+import { flushSync } from 'react-dom';
 import { allData, STAGES, STAGE_LABELS } from './data';
 import type { Day, Act, ItineraryBlock, ItineraryConflict } from './data';
 import { Select } from './components/Select';
@@ -250,14 +251,16 @@ function useSwipePager(day: Day, setDay: (d: Day) => void, onProgress?: Progress
     if (dx < -threshold && idx < DAYS.length - 1) {
       isAnimating.current = true;
       applyTransform(-pw, true);
+      onProgress?.(-pw, pw, true);
       stripRef.current?.addEventListener('transitionend', () => {
-        setDay(DAYS[idx + 1]);
+        flushSync(() => setDay(DAYS[idx + 1]));
       }, { once: true });
     } else if (dx > threshold && idx > 0) {
       isAnimating.current = true;
       applyTransform(pw, true);
+      onProgress?.(pw, pw, true);
       stripRef.current?.addEventListener('transitionend', () => {
-        setDay(DAYS[idx - 1]);
+        flushSync(() => setDay(DAYS[idx - 1]));
       }, { once: true });
     } else {
       applyTransform(0, true);
@@ -549,15 +552,19 @@ export default function App() {
         }
       }
 
-      // Tab text — always suppress CSS transitions to avoid re-render flash
+      // Tab text — suppress CSS transitions during drag; animate to final state on committed release
+      const isCommittedSwipe = instant && progress >= 1;
       tabs.forEach((tab, i) => {
-        tab.style.transition = 'none';
-        if (i === curIdx && progress > 0) {
-          tab.style.color = lerpHex(curAccent, TEXT_MUTED, progress);
-        } else if (tgtAccent && i === targetIdx && progress > 0) {
-          tab.style.color = lerpHex(TEXT_MUTED, tgtAccent, progress);
+        if (isCommittedSwipe) {
+          tab.style.transition = 'color 0.28s ease';
+          if (i === curIdx) tab.style.color = TEXT_MUTED;
+          else if (i === targetIdx && tgtAccent) tab.style.color = tgtAccent;
+          else tab.style.color = '';
         } else {
-          tab.style.color = '';
+          tab.style.transition = 'none';
+          if (i === curIdx && progress > 0) tab.style.color = lerpHex(curAccent, TEXT_MUTED, progress);
+          else if (tgtAccent && i === targetIdx && progress > 0) tab.style.color = lerpHex(TEXT_MUTED, tgtAccent, progress);
+          else tab.style.color = '';
         }
       });
 
@@ -568,7 +575,7 @@ export default function App() {
           nav.querySelectorAll<HTMLElement>('.day-tab').forEach(t => { t.style.transition = ''; });
           nav.querySelector<HTMLElement>('.tab-indicator')?.style.setProperty('transition', '');
         });
-      } else if (instant) {
+      } else if (instant && !isCommittedSwipe) {
         // Snap-back: tabs restore in next frame; indicator restores after its animation
         requestAnimationFrame(() => {
           nav.querySelectorAll<HTMLElement>('.day-tab').forEach(t => { t.style.transition = ''; });
@@ -577,6 +584,7 @@ export default function App() {
           indicator.style.transition = '';
         }, { once: true });
       }
+      // Committed swipe: useLayoutEffect after transitionend will clear inline styles
     }
   }, [day]);
 

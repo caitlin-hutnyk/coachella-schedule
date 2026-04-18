@@ -1,6 +1,7 @@
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import { allData, STAGES, STAGE_LABELS } from './data';
-import type { Day, Act, ItineraryBlock } from './data';
+import type { Day, Act, ItineraryBlock, ItineraryConflict } from './data';
+import { Select } from './components/Select';
 import './App.css';
 
 function formatTime(mins: number): string {
@@ -22,8 +23,8 @@ function formatTimeShort(mins: number): string {
 
 const DAY_RANGES: Record<Day, [number, number]> = {
   friday: [13 * 60, 25 * 60],
-  saturday: [13 * 60, 24.5 * 60],
-  sunday: [13 * 60, 23.5 * 60],
+  saturday: [13 * 60, 25 * 60],
+  sunday: [13 * 60, 24 * 60],
 };
 
 const DAY_LABELS: Record<Day, string> = {
@@ -33,6 +34,50 @@ const DAY_LABELS: Record<Day, string> = {
 };
 
 const HOUR_PX = 80;
+
+const DAY_DATES: Record<Day, string> = {
+  friday: '2026-04-17',
+  saturday: '2026-04-18',
+  sunday: '2026-04-19',
+};
+
+function getLATime(): { dateStr: string; minutes: number } {
+  const now = new Date();
+  const parts = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'America/Los_Angeles',
+    year: 'numeric', month: '2-digit', day: '2-digit',
+    hour: '2-digit', minute: '2-digit', hour12: false,
+  }).formatToParts(now);
+  const get = (type: string) => parts.find(p => p.type === type)?.value ?? '0';
+  const h = parseInt(get('hour'));
+  const m = parseInt(get('minute'));
+
+  // Before 1 AM counts as the previous festival day (nights run past midnight)
+  if (h < 1) {
+    const prevParts = new Intl.DateTimeFormat('en-US', {
+      timeZone: 'America/Los_Angeles',
+      year: 'numeric', month: '2-digit', day: '2-digit',
+    }).formatToParts(new Date(now.getTime() - 60 * 60 * 1000));
+    const pGet = (type: string) => prevParts.find(p => p.type === type)?.value ?? '0';
+    return {
+      dateStr: `${pGet('year')}-${pGet('month')}-${pGet('day')}`,
+      minutes: 24 * 60 + m,
+    };
+  }
+
+  return {
+    dateStr: `${get('year')}-${get('month')}-${get('day')}`,
+    minutes: h * 60 + m,
+  };
+}
+
+function getDefaultDay(): Day {
+  const { dateStr } = getLATime();
+  if (dateStr === DAY_DATES.saturday) return 'saturday';
+  if (dateStr === DAY_DATES.sunday) return 'sunday';
+  if (dateStr === DAY_DATES.friday) return 'friday';
+  return 'friday';
+}
 
 function ActBlock({ act, rangeStart, highlighted, dimmed, onHover, onLeave, hourPx }: {
   act: Act;
@@ -64,7 +109,6 @@ function ActBlock({ act, rangeStart, highlighted, dimmed, onHover, onLeave, hour
         <div className="act-time-label">{formatTimeShort(act.start)}-{formatTimeShort(act.end)}</div>
       )}
       {act.locked && <div className="locked-badge">✓</div>}
-      {act.priority === 'must' && <div className="must-badge">★</div>}
     </div>
   );
 }
@@ -79,12 +123,13 @@ function useIsMobile() {
   return isMobile;
 }
 
-function ScheduleGrid({ acts, day, hoveredActId, onHoverAct, onLeaveAct }: {
+function ScheduleGrid({ acts, day, hoveredActId, onHoverAct, onLeaveAct, nowMinutes }: {
   acts: Act[];
   day: Day;
   hoveredActId: string | null;
   onHoverAct: (id: string, scrollGrid?: boolean) => void;
   onLeaveAct: () => void;
+  nowMinutes: number | null;
 }) {
   const isMobile = useIsMobile();
   const hourPx = isMobile ? 40 : HOUR_PX;
@@ -147,6 +192,15 @@ function ScheduleGrid({ acts, day, hoveredActId, onHoverAct, onLeaveAct }: {
             />
           ))}
 
+          {nowMinutes !== null && nowMinutes <= rangeEnd && (
+            <div
+              className="now-indicator"
+              style={{ top: `${Math.max(0, ((nowMinutes - rangeStart) / 60) * hourPx)}px` }}
+            >
+              <div className="now-indicator-triangle" />
+            </div>
+          )}
+
           <div className="stage-columns">
             {STAGES.map(stage => (
               <div key={stage} className="stage-column">
@@ -203,6 +257,7 @@ function ItineraryItem({ block, hoveredActId, onHoverAct, onLeaveAct, acts }: {
   return (
     <div
       className={`itinerary-item ${block.type} ${isHighlighted ? 'it-highlighted' : ''} ${isMustSee ? 'it-must-see' : ''} ${isLocked ? 'it-locked' : ''}`}
+      data-it-time={block.start}
       onMouseEnter={() => block.actId && onHoverAct(block.actId, true)}
       onMouseLeave={onLeaveAct}
     >
@@ -232,20 +287,43 @@ function ItineraryItem({ block, hoveredActId, onHoverAct, onLeaveAct, acts }: {
             </div>
           )}
           {block.note && <div className="it-note">{block.note}</div>}
-          {block.options && block.options.length > 0 && (
-            <div className="it-options">
-              {block.options.map(opt => (
+          {block.conflicts && block.conflicts.length > 0 && (
+            <div className="it-conflicts">
+              <div className="it-conflicts-header">
+                <span className="it-conflicts-label">also on</span>
+              </div>
+              {block.conflicts.map((c: ItineraryConflict) => (
                 <div
-                  key={opt.actId}
-                  className={`it-option ${opt.tentative ? 'opt-tentative' : ''} ${hoveredActId === opt.actId ? 'opt-highlighted' : ''}`}
-                  onMouseEnter={(e) => { e.stopPropagation(); onHoverAct(opt.actId, true); }}
+                  key={c.actId}
+                  className={`it-conflict-item ${hoveredActId === c.actId ? 'conflict-highlighted' : ''}`}
+                  onMouseEnter={(e) => { e.stopPropagation(); onHoverAct(c.actId, true); }}
                   onMouseLeave={(e) => { e.stopPropagation(); onLeaveAct(); }}
                 >
-                  <PickDot picked={acts.find(a => a.id === opt.actId)?.picked} />
-                  <span className="opt-name">{opt.name}</span>
-                  <span className="opt-detail">{opt.stage} · {opt.time}</span>
+                  <PickDot picked={acts.find(a => a.id === c.actId)?.picked} />
+                  <span className="it-conflict-name">{c.name}</span>
+                  <span className="it-conflict-detail">{c.stage} · {c.time}</span>
                 </div>
               ))}
+            </div>
+          )}
+          {block.options && block.options.length > 0 && (
+            <div className="it-options">
+              {block.options.map(opt => {
+                const optStart = acts.find(a => a.id === opt.actId)?.start;
+                return (
+                  <div
+                    key={opt.actId}
+                    data-it-time={optStart}
+                    className={`it-option ${opt.tentative ? 'opt-tentative' : ''} ${hoveredActId === opt.actId ? 'opt-highlighted' : ''}`}
+                    onMouseEnter={(e) => { e.stopPropagation(); onHoverAct(opt.actId, true); }}
+                    onMouseLeave={(e) => { e.stopPropagation(); onLeaveAct(); }}
+                  >
+                    <PickDot picked={acts.find(a => a.id === opt.actId)?.picked} />
+                    <span className="opt-name">{opt.name}</span>
+                    <span className="opt-detail">{opt.stage} · {opt.time}</span>
+                  </div>
+                );
+              })}
             </div>
           )}
         </div>
@@ -255,7 +333,7 @@ function ItineraryItem({ block, hoveredActId, onHoverAct, onLeaveAct, acts }: {
 }
 
 export default function App() {
-  const [day, setDay] = useState<Day>('friday');
+  const [day, setDay] = useState<Day>(getDefaultDay);
   const [hoveredActId, setHoveredActId] = useState<string | null>(null);
   const [mobileView, setMobileView] = useState<'grid' | 'schedule' | 'map'>('schedule');
   const [showMap, setShowMap] = useState(false);
@@ -277,6 +355,58 @@ export default function App() {
 
   const { acts, itinerary } = allData[day];
 
+  const [nowMinutes, setNowMinutes] = useState<number | null>(() => {
+    const { dateStr, minutes } = getLATime();
+    return dateStr === DAY_DATES[day] ? minutes : null;
+  });
+
+  useEffect(() => {
+    const update = () => {
+      const { dateStr, minutes } = getLATime();
+      setNowMinutes(dateStr === DAY_DATES[day] ? minutes : null);
+    };
+    update();
+    const id = setInterval(update, 30_000);
+    return () => clearInterval(id);
+  }, [day]);
+
+  const itineraryScrollRef = useRef<HTMLDivElement>(null);
+  const [nowLineTop, setNowLineTop] = useState<number | null>(null);
+
+  useEffect(() => {
+    const el = itineraryScrollRef.current;
+    if (!el || nowMinutes === null) { setNowLineTop(null); return; }
+
+    const containerTop = el.getBoundingClientRect().top;
+    const scrollTop = el.scrollTop;
+
+    const items = Array.from(el.querySelectorAll<HTMLElement>('[data-it-time]'))
+      .map(node => ({
+        time: parseInt(node.getAttribute('data-it-time')!, 10),
+        top: node.getBoundingClientRect().top - containerTop + scrollTop,
+      }))
+      .filter(item => !isNaN(item.time))
+      .sort((a, b) => a.time - b.time);
+
+    if (!items.length) { setNowLineTop(null); return; }
+
+    let ai = -1;
+    for (let i = 0; i < items.length; i++) {
+      if (items[i].time <= nowMinutes) ai = i;
+      else break;
+    }
+
+    if (ai < 0) {
+      setNowLineTop(items[0].top);
+    } else if (ai >= items.length - 1) {
+      setNowLineTop(null); // past the last item, nothing to show
+    } else {
+      const A = items[ai], B = items[ai + 1];
+      const ratio = (nowMinutes - A.time) / (B.time - A.time);
+      setNowLineTop(A.top + (B.top - A.top) * ratio);
+    }
+  }, [nowMinutes, day, mobileView]);
+
   return (
     <div className={`app day-${day}`}>
       <header className="app-header">
@@ -289,9 +419,15 @@ export default function App() {
           </div>
           {/* Mobile: view switcher */}
           <div className="mobile-view-tabs mobile-only">
-            <button className={`view-tab ${mobileView === 'schedule' ? 'active' : ''}`} onClick={() => setMobileView('schedule')}>Schedule</button>
-            <button className={`view-tab ${mobileView === 'grid' ? 'active' : ''}`} onClick={() => setMobileView('grid')}>Lineup</button>
-            <button className={`view-tab ${mobileView === 'map' ? 'active' : ''}`} onClick={() => setMobileView('map')}>Map</button>
+            <Select
+              value={mobileView}
+              onValueChange={v => setMobileView(v as typeof mobileView)}
+              options={[
+                { value: 'schedule', label: 'Schedule' },
+                { value: 'grid', label: 'Lineup' },
+                { value: 'map', label: 'Map' },
+              ]}
+            />
           </div>
         </div>
         <nav className="day-tabs">
@@ -325,12 +461,13 @@ export default function App() {
             hoveredActId={hoveredActId}
             onHoverAct={onHoverAct}
             onLeaveAct={onLeaveAct}
+            nowMinutes={nowMinutes}
           />
         </div>
         <div className="divider" />
         <div className={`schedule-panel ${mobileView === 'schedule' ? 'mobile-active' : ''}`}>
           <div className="schedule-panel-header">Our Schedule</div>
-          <div className="itinerary-scroll">
+          <div className="itinerary-scroll" ref={itineraryScrollRef}>
             {itinerary.map((block, i) => (
               <ItineraryItem
                 key={i}
@@ -341,6 +478,11 @@ export default function App() {
                 acts={acts}
               />
             ))}
+            {nowLineTop !== null && (
+              <div className="now-indicator" style={{ top: `${nowLineTop}px` }}>
+                <div className="now-indicator-triangle" />
+              </div>
+            )}
           </div>
         </div>
         {/* Mobile map view */}

@@ -1,4 +1,4 @@
-export type Stage = 'coachella' | 'outdoor' | 'sonora' | 'gobi' | 'mojave' | 'sahara' | 'yuma' | 'quasar';
+export type Stage = 'coachella' | 'outdoor' | 'sonora' | 'gobi' | 'mojave' | 'sahara' | 'yuma' | 'quasar' | 'dolab';
 
 export const STAGE_LABELS: Record<Stage, string> = {
   coachella: 'Coachella Stage',
@@ -9,12 +9,13 @@ export const STAGE_LABELS: Record<Stage, string> = {
   sahara: 'Sahara',
   yuma: 'Yuma',
   quasar: 'Quasar',
+  dolab: 'Do LaB',
 };
 
 // Ordered north → south matching the grounds layout
 // Coachella+OT (north) → Sonora (central) → Gobi+Mojave (east) → Quasar+Yuma+Sahara (south)
 // Far left to far right = longest walk (~20 min)
-export const STAGES: Stage[] = ['coachella', 'outdoor', 'sonora', 'gobi', 'mojave', 'quasar', 'yuma', 'sahara'];
+export const STAGES: Stage[] = ['coachella', 'outdoor', 'sonora', 'gobi', 'mojave', 'quasar', 'yuma', 'dolab', 'sahara'];
 
 export interface Act {
   id: string;
@@ -38,7 +39,15 @@ export interface ItineraryBlock {
   stage?: string;
   note?: string;
   options?: ItineraryOption[];
+  conflicts?: ItineraryConflict[];
   who?: string;
+}
+
+export interface ItineraryConflict {
+  actId: string;
+  name: string;
+  stage: string;
+  time: string;
 }
 
 export interface ItineraryOption {
@@ -123,8 +132,8 @@ export const fridayActs: Act[] = [
   { id: 'f-arodes', name: 'Arodes', stage: 'yuma', start: t(14, 45), end: t(15, 45) },
   { id: 'f-groove-armada', name: 'Groove Armada', stage: 'yuma', start: t(15, 45), end: t(17, 0) },
   { id: 'f-rossi', name: 'Rossi. x Chloé Caillet', stage: 'yuma', start: t(17, 0), end: t(18, 15) },
-  { id: 'f-kettama', name: 'Kettama', stage: 'yuma', start: t(18, 15), end: t(19, 30), picked: 'caitlin', priority: 'want', tentative: true },
-  { id: 'f-prospa', name: 'Prospa', stage: 'yuma', start: t(19, 30), end: t(20, 45), picked: 'caitlin', priority: 'want', tentative: true },
+  { id: 'f-kettama', name: 'Kettama', stage: 'yuma', start: t(18, 15), end: t(19, 30), picked: 'caitlin', priority: 'want' },
+  { id: 'f-prospa', name: 'Prospa', stage: 'yuma', start: t(19, 30), end: t(20, 45), picked: 'caitlin', priority: 'want' },
   { id: 'f-max-dean', name: 'Max Dean x Luke Dean', stage: 'yuma', start: t(20, 45), end: t(22, 0) },
   { id: 'f-max-styler', name: 'Max Styler', stage: 'yuma', start: t(22, 0), end: t(23, 15) },
   { id: 'f-gordo', name: 'Gordo', stage: 'yuma', start: t(23, 15), end: t(24, 55) },
@@ -133,6 +142,19 @@ export const fridayActs: Act[] = [
   { id: 'f-darco', name: 'Darco', stage: 'quasar', start: t(17, 0), end: t(19, 0) },
   { id: 'f-franky', name: 'Franky Rizardo', stage: 'quasar', start: t(19, 0), end: t(21, 0) },
   { id: 'f-armin', name: 'Armin van Buuren x Adam Beyer', stage: 'quasar', start: t(21, 0), end: t(23, 0), picked: 'caitlin', priority: 'want' },
+
+  // Do LaB
+  { id: 'f-dl-patricio', name: 'Patricio', stage: 'dolab', start: t(13, 0), end: t(14, 0) },
+  { id: 'f-dl-arthi', name: 'Arthi', stage: 'dolab', start: t(14, 0), end: t(15, 0) },
+  { id: 'f-dl-sam-alfred', name: 'Sam Alfred', stage: 'dolab', start: t(15, 0), end: t(16, 10) },
+  { id: 'f-dl-alisha', name: 'ALISHA', stage: 'dolab', start: t(16, 10), end: t(17, 10) },
+  { id: 'f-dl-brothers-mack', name: 'The Brothers Macklovitch', stage: 'dolab', start: t(17, 10), end: t(18, 10) },
+  { id: 'f-dl-sbtrkt', name: 'SBTRKT', stage: 'dolab', start: t(18, 10), end: t(19, 10) },
+  { id: 'f-dl-aeon-mode', name: 'Aeon:Mode x Blossom', stage: 'dolab', start: t(19, 10), end: t(20, 25), picked: 'caitlin', priority: 'want' },
+  { id: 'f-dl-level-up', name: 'Level Up x Mary Droppinz', stage: 'dolab', start: t(20, 25), end: t(21, 40), picked: 'caitlin', priority: 'want' },
+  { id: 'f-dl-lyny', name: 'LYNY', stage: 'dolab', start: t(21, 40), end: t(22, 40) },
+  { id: 'f-dl-surprise-1', name: 'Sub Focus', stage: 'dolab', start: t(22, 40), end: t(23, 50), picked: 'caitlin', priority: 'must', locked: true },
+  { id: 'f-dl-surprise-2', name: 'SURPRISE', stage: 'dolab', start: t(23, 50), end: t(25, 0) },
 ];
 
 // ============================================================
@@ -200,13 +222,26 @@ export const saturdayActs: Act[] = [
   { id: 's-sosa', name: 'SOSA', stage: 'yuma', start: t(18, 45), end: t(20, 15), picked: 'caitlin', priority: 'want' },
   { id: 's-bedouin', name: 'Bedouin', stage: 'yuma', start: t(20, 15), end: t(21, 45) },
   { id: 's-boys-noize', name: 'Boys Noize', stage: 'yuma', start: t(21, 45), end: t(23, 0), picked: 'caitlin', priority: 'want' },
-  { id: 's-armin-sat', name: 'Armin van Buuren x Adam Beyer', stage: 'yuma', start: t(23, 0), end: t(24, 55) },
+  { id: 's-armin-sat', name: 'Armin van Buuren x Adam Beyer', stage: 'yuma', start: t(23, 0), end: t(24, 55), picked: 'caitlin', priority: 'want' },
 
   // Quasar
   { id: 's-devault', name: 'Devault', stage: 'quasar', start: t(17, 0), end: t(19, 0) },
   { id: 's-madeon', name: 'Madeon', stage: 'quasar', start: t(19, 0), end: t(20, 15) },
   { id: 's-dj-snake-rl', name: 'DJ Snake x RL Grime x Flosstradamus', stage: 'quasar', start: t(20, 15), end: t(21, 45) },
   { id: 's-dj-snake-knock2', name: 'DJ Snake x Knock2', stage: 'quasar', start: t(21, 45), end: t(23, 0), picked: 'caitlin', priority: 'want' },
+
+  // Do LaB
+  { id: 's-dl-strawbry', name: 'STRAWBRY', stage: 'dolab', start: t(13, 0), end: t(14, 0) },
+  { id: 's-dl-sam-binga', name: 'Sam Binga x Jialing', stage: 'dolab', start: t(14, 0), end: t(15, 15) },
+  { id: 's-dl-champion', name: 'Champion', stage: 'dolab', start: t(15, 15), end: t(16, 15) },
+  { id: 's-dl-eliza-rose', name: 'Eliza Rose', stage: 'dolab', start: t(16, 15), end: t(17, 15) },
+  { id: 's-dl-sarz', name: 'Sarz', stage: 'dolab', start: t(17, 15), end: t(18, 15) },
+  { id: 's-dl-habibeats', name: 'Dj Habibeats x Zainab', stage: 'dolab', start: t(18, 15), end: t(19, 25) },
+  { id: 's-dl-ape-drums', name: 'Ape Drums x Bontan', stage: 'dolab', start: t(19, 25), end: t(20, 35) },
+  { id: 's-dl-gudfella', name: 'GUDFELLA', stage: 'dolab', start: t(20, 35), end: t(21, 35) },
+  { id: 's-dl-seth-troxler', name: 'Seth Troxler', stage: 'dolab', start: t(21, 35), end: t(22, 35) },
+  { id: 's-dl-after-midnight', name: 'AFTER MIDNIGHT (Matroda x San Pacho)', stage: 'dolab', start: t(22, 35), end: t(23, 45), picked: 'caitlin', priority: 'want' },
+  { id: 's-dl-surprise', name: 'SURPRISE', stage: 'dolab', start: t(23, 50), end: t(25, 0) },
 ];
 
 // ============================================================
@@ -279,6 +314,16 @@ export const sundayActs: Act[] = [
   { id: 'su-linska', name: 'Linska', stage: 'quasar', start: t(16, 0), end: t(18, 0) },
   { id: 'su-lp-giobbi', name: 'LP Giobbi', stage: 'quasar', start: t(18, 0), end: t(20, 0) },
   { id: 'su-sara-landry', name: "Sara Landry's Blood Oath", stage: 'quasar', start: t(20, 0), end: t(22, 0), picked: 'caitlin', priority: 'want' },
+
+  // Do LaB
+  { id: 'su-dl-alex-chapman', name: 'Alex Chapman x Zoe Gitter', stage: 'dolab', start: t(15, 5), end: t(16, 20) },
+  { id: 'su-dl-silva-bumpa', name: 'Silva Bumpa', stage: 'dolab', start: t(16, 20), end: t(17, 25) },
+  { id: 'su-dl-drama', name: 'Drama (dj)', stage: 'dolab', start: t(17, 25), end: t(18, 25) },
+  { id: 'su-dl-natascha', name: 'Natascha Polké', stage: 'dolab', start: t(18, 30), end: t(19, 30) },
+  { id: 'su-dl-maxi-meraki', name: 'Maxi Meraki', stage: 'dolab', start: t(19, 30), end: t(20, 35) },
+  { id: 'su-dl-surprise-1', name: 'SURPRISE', stage: 'dolab', start: t(20, 35), end: t(21, 40) },
+  { id: 'su-dl-x-club', name: 'X Club.', stage: 'dolab', start: t(21, 40), end: t(22, 45) },
+  { id: 'su-dl-surprise-2', name: 'SURPRISE', stage: 'dolab', start: t(22, 45), end: t(24, 0) },
 ];
 
 // ============================================================
@@ -318,12 +363,14 @@ export const fridayItinerary: ItineraryBlock[] = [
     end: t(21, 15),
     options: [
       { actId: 'f-central-cee', name: 'Central Cee', stage: 'Mojave', time: '5:30 PM', who: 'violet' },
-      { actId: 'f-kettama', name: 'Kettama', stage: 'Yuma', time: '6:15 PM', who: 'caitlin', tentative: true },
+      { actId: 'f-kettama', name: 'Kettama', stage: 'Yuma', time: '6:15 PM', who: 'caitlin' },
       { actId: 'f-marlon', name: 'Marlon Hoffstadt', stage: 'Sahara', time: '6:15 PM', who: 'caitlin' },
       { actId: 'f-the-xx', name: 'The xx', stage: 'Main', time: '7:00 PM', who: 'caitlin' },
       { actId: 'f-ninajirachi', name: 'Ninajirachi', stage: 'Sonora', time: '7:10 PM', who: 'caitlin' },
-      { actId: 'f-prospa', name: 'Prospa', stage: 'Yuma', time: '7:30 PM', who: 'caitlin', tentative: true },
+      { actId: 'f-dl-aeon-mode', name: 'Aeon:Mode x Blossom', stage: 'Do LaB', time: '7:10 PM', who: 'caitlin' },
+      { actId: 'f-prospa', name: 'Prospa', stage: 'Yuma', time: '7:30 PM', who: 'caitlin' },
       { actId: 'f-katseye', name: 'KATSEYE', stage: 'Sahara', time: '8:00 PM', who: 'both' },
+      { actId: 'f-dl-level-up', name: 'Level Up x Mary Droppinz', stage: 'Do LaB', time: '8:25 PM', who: 'caitlin' },
     ],
   },
   {
@@ -332,7 +379,7 @@ export const fridayItinerary: ItineraryBlock[] = [
     title: 'Levity',
     stage: 'Sahara',
     start: t(21, 15),
-    end: t(21, 50),
+    end: t(22, 20),
     who: 'caitlin',
     note: 'Leave early for Joost (~10 min walk to Gobi)',
   },
@@ -346,16 +393,25 @@ export const fridayItinerary: ItineraryBlock[] = [
     who: 'both',
   },
   {
+    type: 'act',
+    actId: 'f-dl-surprise-1',
+    title: 'Sub Focus',
+    stage: 'Do LaB',
+    start: t(22, 40),
+    end: t(23, 50),
+    who: 'caitlin',
+    note: '~5 min walk from Gobi',
+  },
+  {
     type: 'gametime',
-    title: 'Pick a closer or head home',
-    start: t(22, 35),
+    title: 'Stay or head home',
+    start: t(23, 50),
     end: t(25, 0),
     options: [
-      { actId: 'f-disclosure', name: 'Disclosure', stage: 'OT', time: '10:40 PM', who: 'caitlin', tentative: true },
-      { actId: 'f-ethel-cain', name: 'Ethel Cain', stage: 'Mojave', time: '10:45 PM', who: 'violet' },
       { actId: 'f-anyma', name: 'Anyma', stage: 'Main', time: '12:00 AM', who: 'caitlin', tentative: true },
       { actId: 'f-blood-orange', name: 'Blood Orange', stage: 'Mojave', time: '12:00 AM', who: 'caitlin' },
       { actId: 'f-sexyy-red', name: 'Sexyy Red', stage: 'Sahara', time: '12:05 AM', who: 'violet' },
+      { actId: 'f-dl-surprise-2', name: 'Do LaB SURPRISE', stage: 'Do LaB', time: '11:50 PM', who: 'caitlin' },
     ],
   },
 ];
@@ -383,6 +439,9 @@ export const saturdayItinerary: ItineraryBlock[] = [
     end: t(19, 0),
     who: 'violet',
     note: 'Arrive early',
+    conflicts: [
+      { actId: 's-yuki', name: '¥ØUSUK€ ¥UK1MAT$U', stage: 'Sahara', time: '6:15 PM' },
+    ],
   },
   {
     type: 'food',
@@ -402,9 +461,12 @@ export const saturdayItinerary: ItineraryBlock[] = [
     title: 'THE STROKES',
     stage: 'Main',
     start: t(21, 0),
-    end: t(22, 5),
+    end: t(22, 10),
     who: 'both',
     note: 'Leave ~5 min early for Worship',
+    conflicts: [
+      { actId: 's-pinkpantheress', name: 'PinkPantheress', stage: 'Mojave', time: '8:55 PM' },
+    ],
   },
   {
     type: 'act',
@@ -415,6 +477,9 @@ export const saturdayItinerary: ItineraryBlock[] = [
     end: t(23, 35),
     who: 'caitlin',
     note: '~20 min walk from Main — tight!',
+    conflicts: [
+      { actId: 's-dj-snake-knock2', name: 'DJ Snake x Knock2', stage: 'Quasar', time: '9:45 PM' },
+    ],
   },
   {
     type: 'gametime',
@@ -422,6 +487,7 @@ export const saturdayItinerary: ItineraryBlock[] = [
     start: t(23, 35),
     end: t(24, 30),
     options: [
+      { actId: 's-dl-after-midnight', name: 'AFTER MIDNIGHT (Matroda x San Pacho)', stage: 'Do LaB', time: '10:35 PM', who: 'caitlin' },
       { actId: 's-armin-sat', name: 'Armin van Buuren x Adam Beyer', stage: 'Yuma', time: '11:00 PM', who: 'caitlin' },
       { actId: 's-justin-bieber', name: 'Justin Bieber', stage: 'Main', time: '11:25 PM', who: 'caitlin' },
     ],
@@ -459,9 +525,12 @@ export const sundayItinerary: ItineraryBlock[] = [
     title: 'Young Thug',
     stage: 'Main',
     start: t(19, 50),
-    end: t(20, 30),
+    end: t(20, 40),
     who: 'violet',
     note: '~8 min walk from OT. Leave ~8:30 for Laufey.',
+    conflicts: [
+      { actId: 'su-sara-landry', name: "Sara Landry's Blood Oath", stage: 'Quasar', time: '8:00 PM' },
+    ],
   },
   {
     type: 'act',
@@ -472,6 +541,10 @@ export const sundayItinerary: ItineraryBlock[] = [
     end: t(21, 45),
     who: 'both',
     note: '~8 min walk from Main',
+    conflicts: [
+      { actId: 'su-sara-landry', name: "Sara Landry's Blood Oath", stage: 'Quasar', time: '8:00 PM' },
+      { actId: 'su-subtronics', name: 'Subtronics', stage: 'Sahara', time: '9:05 PM' },
+    ],
   },
   {
     type: 'gametime',
@@ -479,7 +552,6 @@ export const sundayItinerary: ItineraryBlock[] = [
     start: t(21, 45),
     end: t(24, 0),
     options: [
-      { actId: 'su-subtronics', name: 'Subtronics', stage: 'Sahara', time: '9:05 PM', who: 'caitlin' },
       { actId: 'su-karol-g', name: 'KAROL G', stage: 'Main', time: '10:10 PM', who: 'caitlin' },
       { actId: 'su-kaskade', name: 'Kaskade', stage: 'Sahara', time: '10:50 PM', who: 'caitlin', tentative: true },
     ],

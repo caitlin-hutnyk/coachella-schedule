@@ -536,24 +536,49 @@ export default function App() {
       const curAccent = DAY_ACCENTS[day];
       const tgtAccent = targetDay ? DAY_ACCENTS[targetDay] : null;
 
-      // Sliding indicator
+      // isCommittedSwipe used by both indicator and tabs sections
+      const isCommittedSwipe = instant && progress >= 1;
+
+      // Sliding indicator — position AND color driven by JS so both lerp during drag
       if (indicator && curTab) {
-        indicator.style.transition = instant ? 'left 0.28s ease, width 0.28s ease' : 'none';
         const curRect = curTab.getBoundingClientRect();
         const curL = curRect.left - navRect.left;
         const curW = curRect.width;
-        if (tgtTab && progress > 0) {
-          const tgtRect = tgtTab.getBoundingClientRect();
-          indicator.style.left = `${curL + (tgtRect.left - navRect.left - curL) * progress}px`;
-          indicator.style.width = `${curW + (tgtRect.width - curW) * progress}px`;
-        } else {
+        if (isCommittedSwipe) {
+          indicator.style.transition = 'left 0.28s ease, width 0.28s ease, background-color 0.28s ease';
+          if (tgtTab) {
+            const tgtRect = tgtTab.getBoundingClientRect();
+            indicator.style.left = `${tgtRect.left - navRect.left}px`;
+            indicator.style.width = `${tgtRect.width}px`;
+          }
+          indicator.style.backgroundColor = tgtAccent ?? curAccent;
+        } else if (isDayChange) {
+          indicator.style.transition = 'none';
           indicator.style.left = `${curL}px`;
           indicator.style.width = `${curW}px`;
+          indicator.style.backgroundColor = '';
+        } else if (instant) {
+          // snap-back
+          indicator.style.transition = 'left 0.28s ease, width 0.28s ease, background-color 0.28s ease';
+          indicator.style.left = `${curL}px`;
+          indicator.style.width = `${curW}px`;
+          indicator.style.backgroundColor = curAccent;
+        } else {
+          indicator.style.transition = 'none';
+          if (tgtTab && progress > 0) {
+            const tgtRect = tgtTab.getBoundingClientRect();
+            indicator.style.left = `${curL + (tgtRect.left - navRect.left - curL) * progress}px`;
+            indicator.style.width = `${curW + (tgtRect.width - curW) * progress}px`;
+            indicator.style.backgroundColor = lerpHex(curAccent, tgtAccent!, progress);
+          } else {
+            indicator.style.left = `${curL}px`;
+            indicator.style.width = `${curW}px`;
+            indicator.style.backgroundColor = curAccent;
+          }
         }
       }
 
-      // Tab text — suppress CSS transitions during drag; animate to final state on committed release
-      const isCommittedSwipe = instant && progress >= 1;
+      // Tab text
       tabs.forEach((tab, i) => {
         if (isCommittedSwipe) {
           tab.style.transition = 'color 0.28s ease';
@@ -570,21 +595,21 @@ export default function App() {
 
       // Restore CSS transitions after current frame
       if (isDayChange) {
-        // Day change: instant reset, restore in next frame
         requestAnimationFrame(() => {
           nav.querySelectorAll<HTMLElement>('.day-tab').forEach(t => { t.style.transition = ''; });
           nav.querySelector<HTMLElement>('.tab-indicator')?.style.setProperty('transition', '');
         });
       } else if (instant && !isCommittedSwipe) {
-        // Snap-back: tabs restore in next frame; indicator restores after its animation
+        // Snap-back: tabs restore in next frame; indicator clears after its animation
         requestAnimationFrame(() => {
           nav.querySelectorAll<HTMLElement>('.day-tab').forEach(t => { t.style.transition = ''; });
         });
         indicator?.addEventListener('transitionend', () => {
           indicator.style.transition = '';
+          indicator.style.backgroundColor = '';
         }, { once: true });
       }
-      // Committed swipe: useLayoutEffect after transitionend will clear inline styles
+      // Committed swipe: useLayoutEffect (isDayChange) clears backgroundColor on next render
     }
   }, [day]);
 

@@ -35,6 +35,23 @@ const DAY_LABELS: Record<Day, string> = {
 
 const DAYS: Day[] = ['friday', 'saturday', 'sunday'];
 
+const DAY_ACCENTS: Record<Day, string> = {
+  friday: '#4a90d9',
+  saturday: '#c07848',
+  sunday: '#c87a4a',
+};
+const TEXT_MUTED = '#8a7d6b';
+
+function hexToRgbStr(hex: string): string {
+  return `${parseInt(hex.slice(1,3),16)},${parseInt(hex.slice(3,5),16)},${parseInt(hex.slice(5,7),16)}`;
+}
+
+function lerpHex(a: string, b: string, t: number): string {
+  const ar=parseInt(a.slice(1,3),16),ag=parseInt(a.slice(3,5),16),ab=parseInt(a.slice(5,7),16);
+  const br=parseInt(b.slice(1,3),16),bg=parseInt(b.slice(3,5),16),bb=parseInt(b.slice(5,7),16);
+  return `rgb(${Math.round(ar+(br-ar)*t)},${Math.round(ag+(bg-ag)*t)},${Math.round(ab+(bb-ab)*t)})`;
+}
+
 function isZoomedOut() {
   const vv = window.visualViewport;
   return !vv || vv.scale <= 1.05;
@@ -164,9 +181,13 @@ function ActBlock({ act, rangeStart, highlighted, dimmed, onHover, onLeave, hour
 
 const noop = () => {};
 
-function useSwipePager(day: Day, setDay: (d: Day) => void) {
+type ProgressFn = (dx: number, pw: number, instant: boolean) => void;
+
+function useSwipePager(day: Day, setDay: (d: Day) => void, onProgress?: ProgressFn) {
   const stripRef = useRef<HTMLDivElement>(null);
   const touchStartX = useRef<number | null>(null);
+  const touchStartY = useRef<number | null>(null);
+  const axisLock = useRef<'h' | 'v' | null>(null);
   const isAnimating = useRef(false);
 
   const getPageWidth = () => stripRef.current?.parentElement?.offsetWidth ?? window.innerWidth;
@@ -178,11 +199,13 @@ function useSwipePager(day: Day, setDay: (d: Day) => void) {
     el.style.transform = `translateX(${-getPageWidth() + offset}px)`;
   };
 
-  // Reset to center after day changes (from swipe or tab click), before browser paints
   useLayoutEffect(() => {
+    const pw = getPageWidth();
     applyTransform(0, false);
+    onProgress?.(0, pw, false);
     isAnimating.current = false;
     touchStartX.current = null;
+    axisLock.current = null;
   }, [day]);
 
   const idx = DAYS.indexOf(day);
@@ -190,28 +213,47 @@ function useSwipePager(day: Day, setDay: (d: Day) => void) {
   const onTouchStart = useCallback((e: React.TouchEvent) => {
     if (!isZoomedOut() || isAnimating.current) return;
     touchStartX.current = e.touches[0].clientX;
+    touchStartY.current = e.touches[0].clientY;
+    axisLock.current = null;
   }, []);
 
   const onTouchMove = useCallback((e: React.TouchEvent) => {
     if (touchStartX.current === null) return;
-    let dx = e.touches[0].clientX - touchStartX.current;
-    // Rubber-band at edges
+    const rawDx = e.touches[0].clientX - touchStartX.current;
+    const rawDy = e.touches[0].clientY - (touchStartY.current ?? 0);
+
+    // Commit to horizontal or vertical after 12px — prevents accidental swipes while scrolling
+    if (axisLock.current === null) {
+      if (Math.abs(rawDx) > 12 || Math.abs(rawDy) > 12)
+        axisLock.current = Math.abs(rawDx) >= Math.abs(rawDy) ? 'h' : 'v';
+      return;
+    }
+    if (axisLock.current === 'v') return;
+
+    let dx = rawDx;
     if (dx > 0 && idx === 0) dx *= 0.15;
     else if (dx < 0 && idx === DAYS.length - 1) dx *= 0.15;
+
+    const pw = getPageWidth();
     applyTransform(dx, false);
-  }, [idx]);
+    onProgress?.(dx, pw, false);
+  }, [idx, onProgress]);
 
   const onTouchEnd = useCallback((e: React.TouchEvent) => {
-    if (touchStartX.current === null) return;
+    if (touchStartX.current === null || axisLock.current !== 'h') {
+      touchStartX.current = null;
+      axisLock.current = null;
+      return;
+    }
     const dx = e.changedTouches[0].clientX - touchStartX.current;
     touchStartX.current = null;
+    axisLock.current = null;
     const pw = getPageWidth();
     const threshold = pw * 0.3;
 
     if (dx < -threshold && idx < DAYS.length - 1) {
       isAnimating.current = true;
       applyTransform(-pw, true);
-      // After animation, change day — useLayoutEffect resets transform before paint
       stripRef.current?.addEventListener('transitionend', () => {
         setDay(DAYS[idx + 1]);
       }, { once: true });
@@ -223,8 +265,9 @@ function useSwipePager(day: Day, setDay: (d: Day) => void) {
       }, { once: true });
     } else {
       applyTransform(0, true);
+      onProgress?.(0, pw, true); // snap-back with smooth fade
     }
-  }, [idx, setDay]);
+  }, [idx, setDay, onProgress]);
 
   return { stripRef, onTouchStart, onTouchMove, onTouchEnd };
 }
@@ -466,7 +509,43 @@ export default function App() {
   }, []);
 
   const gridSwipe = useSwipeDay(day, handleDayChange, gridScrollRef);
-  const { stripRef, onTouchStart: planTouchStart, onTouchMove: planTouchMove, onTouchEnd: planTouchEnd } = useSwipePager(day, handleDayChange);
+  const bgOverlayRef = useRef<HTMLDivElement>(null);
+  const dayTabsRef = useRef<HTMLElement>(null);
+
+  const handleSwipeProgress: ProgressFn = useCallback((dx, pw, instant) => {
+    const progress = Math.min(Math.abs(dx) / pw, 1);
+    const curIdx = DAYS.indexOf(day);
+    const targetIdx = dx > 0 ? curIdx - 1 : curIdx + 1;
+    const targetDay: Day | null = DAYS[targetIdx] ?? null;
+
+    const overlay = bgOverlayRef.current;
+    if (overlay) {
+      overlay.style.transition = instant ? 'opacity 0.28s ease' : 'none';
+      overlay.className = targetDay && progress > 0 ? `day-bg-overlay day-${targetDay}` : 'day-bg-overlay';
+      overlay.style.opacity = targetDay && progress > 0 ? String(progress) : '0';
+    }
+
+    const nav = dayTabsRef.current;
+    if (nav) {
+      const tabs = nav.querySelectorAll<HTMLElement>('.day-tab');
+      tabs.forEach((tab, i) => {
+        tab.style.transition = instant ? '' : 'none';
+        if (i === curIdx && progress > 0) {
+          tab.style.color = lerpHex(DAY_ACCENTS[day], TEXT_MUTED, progress);
+          tab.style.borderBottomColor = `rgba(${hexToRgbStr(DAY_ACCENTS[day])},${1 - progress})`;
+        } else if (targetDay && i === targetIdx && progress > 0) {
+          tab.style.color = lerpHex(TEXT_MUTED, DAY_ACCENTS[targetDay], progress);
+          tab.style.borderBottomColor = `rgba(${hexToRgbStr(DAY_ACCENTS[targetDay])},${progress})`;
+        } else {
+          tab.style.color = '';
+          tab.style.borderBottomColor = '';
+          tab.style.transition = '';
+        }
+      });
+    }
+  }, [day]);
+
+  const { stripRef, onTouchStart: planTouchStart, onTouchMove: planTouchMove, onTouchEnd: planTouchEnd } = useSwipePager(day, handleDayChange, handleSwipeProgress);
 
   const idx = DAYS.indexOf(day);
   const prevDay = idx > 0 ? DAYS[idx - 1] : null;
@@ -542,6 +621,7 @@ export default function App() {
 
   return (
     <div className={`app day-${day}`}>
+      <div className="day-bg-overlay" ref={bgOverlayRef} />
       <header className="app-header">
         <div className="header-top">
           <div className="header-brand">COACHELLA</div>
@@ -563,7 +643,7 @@ export default function App() {
             />
           </div>
         </div>
-        <nav className="day-tabs">
+        <nav className="day-tabs" ref={dayTabsRef as React.RefObject<HTMLElement>}>
           {(['friday', 'saturday', 'sunday'] as Day[]).map(d => (
             <button
               key={d}

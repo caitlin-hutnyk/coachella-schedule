@@ -70,10 +70,20 @@ body {
   display: flex;
   flex-direction: column;
   background: var(--day-bg);
+  position: relative;
+}
+
+.day-bg-overlay {
+  position: absolute;
+  inset: 0;
+  background: var(--day-bg);
+  pointer-events: none;
+  opacity: 0;
+  z-index: 0;
 }
 
 /* ──── Header ──── */
-.app-header { padding: 16px 24px 0; flex-shrink: 0; }
+.app-header { padding: 16px 24px 0; flex-shrink: 0; position: relative; z-index: 1; }
 
 .header-top {
   display: flex;
@@ -132,6 +142,8 @@ body {
   padding: 10px 24px;
   border-bottom: 1px solid var(--border);
   flex-shrink: 0;
+  position: relative;
+  z-index: 1;
 }
 
 .legend-item {
@@ -164,6 +176,8 @@ body {
   display: flex;
   overflow: hidden;
   min-height: 0;
+  position: relative;
+  z-index: 1;
 }
 
 .grid-panel {

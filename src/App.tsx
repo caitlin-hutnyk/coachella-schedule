@@ -301,7 +301,9 @@ function ItineraryItem({ block, hoveredActId, onHoverAct, onLeaveAct, acts }: {
                 >
                   <PickDot picked={acts.find(a => a.id === c.actId)?.picked} />
                   <span className="it-conflict-name">{c.name}</span>
-                  <span className="it-conflict-detail">{c.stage} · {c.time}</span>
+                  {(() => { const a = acts.find(x => x.id === c.actId); return (
+                    <span className="it-conflict-detail">{c.stage} · {a ? `${formatTime(a.start)}–${formatTime(a.end)}` : c.time}</span>
+                  ); })()}
                 </div>
               ))}
             </div>
@@ -318,9 +320,11 @@ function ItineraryItem({ block, hoveredActId, onHoverAct, onLeaveAct, acts }: {
                     onMouseEnter={(e) => { e.stopPropagation(); onHoverAct(opt.actId, true); }}
                     onMouseLeave={(e) => { e.stopPropagation(); onLeaveAct(); }}
                   >
-                    <PickDot picked={acts.find(a => a.id === opt.actId)?.picked} />
-                    <span className="opt-name">{opt.name}</span>
-                    <span className="opt-detail">{opt.stage} · {opt.time}</span>
+                    {(() => { const a = acts.find(x => x.id === opt.actId); return (<>
+                      <PickDot picked={a?.picked} />
+                      <span className="opt-name">{opt.name}</span>
+                      <span className="opt-detail">{opt.stage} · {a ? `${formatTime(a.start)}–${formatTime(a.end)}` : opt.time}</span>
+                    </>); })()}
                   </div>
                 );
               })}

@@ -702,25 +702,20 @@ body {
   font-weight: 700;
 }
 
-/* ── Must-see itinerary items: red accent ── */
-.itinerary-item.it-must-see .it-dot.act {
-  background: #d94545;
-  border-color: #d94545;
-}
-
+/* ── Must-see itinerary items: red, same structure as locked ── */
+.itinerary-item.it-must-see .it-dot.act,
 .itinerary-item.it-must-see .it-dot.must {
   background: #d94545;
   border-color: #d94545;
-  box-shadow: 0 0 0 3px rgba(217, 69, 69, 0.2);
 }
 
 .itinerary-item.it-must-see .it-card {
-  border-left: 4px solid #d94545;
-  background: #fef5f5;
+  background: white;
+  border: 3px solid #d94545;
 }
 
 .itinerary-item.it-must-see .it-card-title {
-  color: #b91c1c;
+  color: #7f1d1d;
   font-weight: 700;
 }
 
@@ -860,8 +855,8 @@ body {
     align-items: center;
     gap: 5px;
     padding: 6px 10px;
-    background: rgba(0,0,0,0.07);
-    border: none;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
     border-radius: 8px;
     font-family: 'DM Sans', sans-serif;
     font-size: 12px;

@@ -210,13 +210,12 @@ function PickDot({ picked }: { picked?: string }) {
   return <span className={`pick-indicator ${cls}`} title={picked === 'both' ? 'Both' : picked === 'caitlin' ? 'Caitlin' : 'Violet'} />;
 }
 
-function ItineraryItem({ block, hoveredActId, onHoverAct, onLeaveAct, acts, nowMinutes }: {
+function ItineraryItem({ block, hoveredActId, onHoverAct, onLeaveAct, acts }: {
   block: ItineraryBlock;
   hoveredActId: string | null;
   onHoverAct: (id: string, scrollGrid?: boolean) => void;
   onLeaveAct: () => void;
   acts: Act[];
-  nowMinutes?: number | null;
 }) {
   const isHighlighted = block.actId ? hoveredActId === block.actId : false;
   const actData = block.actId ? acts.find(a => a.id === block.actId) : undefined;
@@ -235,6 +234,7 @@ function ItineraryItem({ block, hoveredActId, onHoverAct, onLeaveAct, acts, nowM
   return (
     <div
       className={`itinerary-item ${block.type} ${isHighlighted ? 'it-highlighted' : ''} ${isMustSee ? 'it-must-see' : ''} ${isLocked ? 'it-locked' : ''}`}
+      data-it-time={block.start}
       onMouseEnter={() => block.actId && onHoverAct(block.actId, true)}
       onMouseLeave={onLeaveAct}
     >
@@ -285,34 +285,22 @@ function ItineraryItem({ block, hoveredActId, onHoverAct, onLeaveAct, acts, nowM
           )}
           {block.options && block.options.length > 0 && (
             <div className="it-options">
-              {(() => {
-                let inserted = false;
-                return block.options.map(opt => {
-                  const optStart = acts.find(a => a.id === opt.actId)?.start;
-                  const showNow = !inserted && nowMinutes != null && optStart != null && nowMinutes < optStart;
-                  if (showNow) inserted = true;
-                  return (
-                    <div key={opt.actId}>
-                      {showNow && (
-                        <div className="it-now-line">
-                          <div className="it-now-triangle" />
-                          <span className="it-now-label">{formatTime(nowMinutes!)}</span>
-                          <div className="it-now-rule" />
-                        </div>
-                      )}
-                      <div
-                        className={`it-option ${opt.tentative ? 'opt-tentative' : ''} ${hoveredActId === opt.actId ? 'opt-highlighted' : ''}`}
-                        onMouseEnter={(e) => { e.stopPropagation(); onHoverAct(opt.actId, true); }}
-                        onMouseLeave={(e) => { e.stopPropagation(); onLeaveAct(); }}
-                      >
-                        <PickDot picked={acts.find(a => a.id === opt.actId)?.picked} />
-                        <span className="opt-name">{opt.name}</span>
-                        <span className="opt-detail">{opt.stage} · {opt.time}</span>
-                      </div>
-                    </div>
-                  );
-                });
-              })()}
+              {block.options.map(opt => {
+                const optStart = acts.find(a => a.id === opt.actId)?.start;
+                return (
+                  <div
+                    key={opt.actId}
+                    data-it-time={optStart}
+                    className={`it-option ${opt.tentative ? 'opt-tentative' : ''} ${hoveredActId === opt.actId ? 'opt-highlighted' : ''}`}
+                    onMouseEnter={(e) => { e.stopPropagation(); onHoverAct(opt.actId, true); }}
+                    onMouseLeave={(e) => { e.stopPropagation(); onLeaveAct(); }}
+                  >
+                    <PickDot picked={acts.find(a => a.id === opt.actId)?.picked} />
+                    <span className="opt-name">{opt.name}</span>
+                    <span className="opt-detail">{opt.stage} · {opt.time}</span>
+                  </div>
+                );
+              })}
             </div>
           )}
         </div>
@@ -358,6 +346,43 @@ export default function App() {
     const id = setInterval(update, 30_000);
     return () => clearInterval(id);
   }, [day]);
+
+  const itineraryScrollRef = useRef<HTMLDivElement>(null);
+  const [nowLineTop, setNowLineTop] = useState<number | null>(null);
+
+  useEffect(() => {
+    const el = itineraryScrollRef.current;
+    if (!el || nowMinutes === null) { setNowLineTop(null); return; }
+
+    const containerTop = el.getBoundingClientRect().top;
+    const scrollTop = el.scrollTop;
+
+    const items = Array.from(el.querySelectorAll<HTMLElement>('[data-it-time]'))
+      .map(node => ({
+        time: parseInt(node.getAttribute('data-it-time')!, 10),
+        top: node.getBoundingClientRect().top - containerTop + scrollTop,
+      }))
+      .filter(item => !isNaN(item.time))
+      .sort((a, b) => a.time - b.time);
+
+    if (!items.length) { setNowLineTop(null); return; }
+
+    let ai = -1;
+    for (let i = 0; i < items.length; i++) {
+      if (items[i].time <= nowMinutes) ai = i;
+      else break;
+    }
+
+    if (ai < 0) {
+      setNowLineTop(items[0].top);
+    } else if (ai >= items.length - 1) {
+      setNowLineTop(null); // past the last item, nothing to show
+    } else {
+      const A = items[ai], B = items[ai + 1];
+      const ratio = (nowMinutes - A.time) / (B.time - A.time);
+      setNowLineTop(A.top + (B.top - A.top) * ratio);
+    }
+  }, [nowMinutes, day]);
 
   return (
     <div className={`app day-${day}`}>
@@ -413,46 +438,22 @@ export default function App() {
         <div className="divider" />
         <div className={`schedule-panel ${mobileView === 'schedule' ? 'mobile-active' : ''}`}>
           <div className="schedule-panel-header">Our Schedule</div>
-          <div className="itinerary-scroll">
-            {(() => {
-              let nowInserted = false;
-              return itinerary.map((block, i) => {
-                // Check if nowMinutes falls within this block's options list
-                // (handled internally by ItineraryItem — skip inter-block insert)
-                const nowInOptions = !nowInserted && nowMinutes !== null && block.options?.length
-                  ? (() => {
-                      const lastOptStart = acts.find(a => a.id === block.options![block.options!.length - 1].actId)?.start;
-                      return nowMinutes >= block.start && (lastOptStart != null ? nowMinutes < lastOptStart : false);
-                    })()
-                  : false;
-
-                const showNowBefore = !nowInserted && !nowInOptions && nowMinutes !== null &&
-                  (i === 0 ? nowMinutes < block.start
-                    : nowMinutes >= itinerary[i - 1].start && nowMinutes < block.start);
-
-                if (nowInOptions || showNowBefore) nowInserted = true;
-
-                return (
-                  <div key={i}>
-                    {showNowBefore && (
-                      <div className="it-now-line">
-                        <div className="it-now-triangle" />
-                        <span className="it-now-label">{formatTime(nowMinutes!)}</span>
-                        <div className="it-now-rule" />
-                      </div>
-                    )}
-                    <ItineraryItem
-                      block={block}
-                      hoveredActId={hoveredActId}
-                      onHoverAct={onHoverAct}
-                      onLeaveAct={onLeaveAct}
-                      acts={acts}
-                      nowMinutes={nowInOptions ? nowMinutes : null}
-                    />
-                  </div>
-                );
-              });
-            })()}
+          <div className="itinerary-scroll" ref={itineraryScrollRef}>
+            {itinerary.map((block, i) => (
+              <ItineraryItem
+                key={i}
+                block={block}
+                hoveredActId={hoveredActId}
+                onHoverAct={onHoverAct}
+                onLeaveAct={onLeaveAct}
+                acts={acts}
+              />
+            ))}
+            {nowLineTop !== null && (
+              <div className="now-indicator" style={{ top: `${nowLineTop}px` }}>
+                <div className="now-indicator-triangle" />
+              </div>
+            )}
           </div>
         </div>
         {/* Mobile map view */}

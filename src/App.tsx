@@ -191,10 +191,10 @@ function ScheduleGrid({ acts, day, hoveredActId, onHoverAct, onLeaveAct, nowMinu
             />
           ))}
 
-          {nowMinutes !== null && nowMinutes >= rangeStart && nowMinutes <= rangeEnd && (
+          {nowMinutes !== null && nowMinutes <= rangeEnd && (
             <div
               className="now-indicator"
-              style={{ top: `${((nowMinutes - rangeStart) / 60) * hourPx}px` }}
+              style={{ top: `${Math.max(0, ((nowMinutes - rangeStart) / 60) * hourPx)}px` }}
             >
               <div className="now-indicator-triangle" />
             </div>
@@ -404,7 +404,7 @@ export default function App() {
       const ratio = (nowMinutes - A.time) / (B.time - A.time);
       setNowLineTop(A.top + (B.top - A.top) * ratio);
     }
-  }, [nowMinutes, day]);
+  }, [nowMinutes, day, mobileView]);
 
   return (
     <div className={`app day-${day}`}>

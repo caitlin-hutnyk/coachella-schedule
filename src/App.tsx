@@ -210,12 +210,13 @@ function PickDot({ picked }: { picked?: string }) {
   return <span className={`pick-indicator ${cls}`} title={picked === 'both' ? 'Both' : picked === 'caitlin' ? 'Caitlin' : 'Violet'} />;
 }
 
-function ItineraryItem({ block, hoveredActId, onHoverAct, onLeaveAct, acts }: {
+function ItineraryItem({ block, hoveredActId, onHoverAct, onLeaveAct, acts, nowMinutes }: {
   block: ItineraryBlock;
   hoveredActId: string | null;
   onHoverAct: (id: string, scrollGrid?: boolean) => void;
   onLeaveAct: () => void;
   acts: Act[];
+  nowMinutes?: number | null;
 }) {
   const isHighlighted = block.actId ? hoveredActId === block.actId : false;
   const actData = block.actId ? acts.find(a => a.id === block.actId) : undefined;
@@ -284,18 +285,34 @@ function ItineraryItem({ block, hoveredActId, onHoverAct, onLeaveAct, acts }: {
           )}
           {block.options && block.options.length > 0 && (
             <div className="it-options">
-              {block.options.map(opt => (
-                <div
-                  key={opt.actId}
-                  className={`it-option ${opt.tentative ? 'opt-tentative' : ''} ${hoveredActId === opt.actId ? 'opt-highlighted' : ''}`}
-                  onMouseEnter={(e) => { e.stopPropagation(); onHoverAct(opt.actId, true); }}
-                  onMouseLeave={(e) => { e.stopPropagation(); onLeaveAct(); }}
-                >
-                  <PickDot picked={acts.find(a => a.id === opt.actId)?.picked} />
-                  <span className="opt-name">{opt.name}</span>
-                  <span className="opt-detail">{opt.stage} · {opt.time}</span>
-                </div>
-              ))}
+              {(() => {
+                let inserted = false;
+                return block.options.map(opt => {
+                  const optStart = acts.find(a => a.id === opt.actId)?.start;
+                  const showNow = !inserted && nowMinutes != null && optStart != null && nowMinutes < optStart;
+                  if (showNow) inserted = true;
+                  return (
+                    <div key={opt.actId}>
+                      {showNow && (
+                        <div className="it-now-line">
+                          <div className="it-now-triangle" />
+                          <span className="it-now-label">{formatTime(nowMinutes!)}</span>
+                          <div className="it-now-rule" />
+                        </div>
+                      )}
+                      <div
+                        className={`it-option ${opt.tentative ? 'opt-tentative' : ''} ${hoveredActId === opt.actId ? 'opt-highlighted' : ''}`}
+                        onMouseEnter={(e) => { e.stopPropagation(); onHoverAct(opt.actId, true); }}
+                        onMouseLeave={(e) => { e.stopPropagation(); onLeaveAct(); }}
+                      >
+                        <PickDot picked={acts.find(a => a.id === opt.actId)?.picked} />
+                        <span className="opt-name">{opt.name}</span>
+                        <span className="opt-detail">{opt.stage} · {opt.time}</span>
+                      </div>
+                    </div>
+                  );
+                });
+              })()}
             </div>
           )}
         </div>
@@ -400,17 +417,28 @@ export default function App() {
             {(() => {
               let nowInserted = false;
               return itinerary.map((block, i) => {
-                const showNow = !nowInserted && nowMinutes !== null &&
+                // Check if nowMinutes falls within this block's options list
+                // (handled internally by ItineraryItem — skip inter-block insert)
+                const nowInOptions = !nowInserted && nowMinutes !== null && block.options?.length
+                  ? (() => {
+                      const lastOptStart = acts.find(a => a.id === block.options![block.options!.length - 1].actId)?.start;
+                      return nowMinutes >= block.start && (lastOptStart != null ? nowMinutes < lastOptStart : false);
+                    })()
+                  : false;
+
+                const showNowBefore = !nowInserted && !nowInOptions && nowMinutes !== null &&
                   (i === 0 ? nowMinutes < block.start
                     : nowMinutes >= itinerary[i - 1].start && nowMinutes < block.start);
-                if (showNow) nowInserted = true;
+
+                if (nowInOptions || showNowBefore) nowInserted = true;
+
                 return (
                   <div key={i}>
-                    {showNow && (
+                    {showNowBefore && (
                       <div className="it-now-line">
                         <div className="it-now-triangle" />
-                        <div className="it-now-rule" />
                         <span className="it-now-label">{formatTime(nowMinutes!)}</span>
+                        <div className="it-now-rule" />
                       </div>
                     )}
                     <ItineraryItem
@@ -419,6 +447,7 @@ export default function App() {
                       onHoverAct={onHoverAct}
                       onLeaveAct={onLeaveAct}
                       acts={acts}
+                      nowMinutes={nowInOptions ? nowMinutes : null}
                     />
                   </div>
                 );

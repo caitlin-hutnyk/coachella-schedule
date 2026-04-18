@@ -1018,14 +1018,7 @@ body {
   border-bottom: 6px solid transparent;
   border-left: 9px solid #e85a4f;
   flex-shrink: 0;
-}
-
-.it-now-rule {
-  flex: 1;
-  height: 0;
-  border-top: 2px dashed #e85a4f;
-  opacity: 0.8;
-  margin: 0 6px;
+  margin-right: 5px;
 }
 
 .it-now-label {
@@ -1035,4 +1028,12 @@ body {
   color: #e85a4f;
   white-space: nowrap;
   flex-shrink: 0;
+  margin-right: 6px;
+}
+
+.it-now-rule {
+  flex: 1;
+  height: 0;
+  border-top: 2px dashed #e85a4f;
+  opacity: 0.8;
 }

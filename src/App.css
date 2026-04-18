@@ -523,7 +523,7 @@ body {
   border-radius: 8px;
   border: 1px solid var(--border);
   background: white;
-  transition: all 0.2s;
+  transition: border-color 0.15s, box-shadow 0.15s;
   min-width: 0;
 }
 

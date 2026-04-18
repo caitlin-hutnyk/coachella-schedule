@@ -732,12 +732,12 @@ export default function App() {
             <div className="plan-strip" ref={stripRef}>
               <div className="plan-page">
                 {prevDay && allData[prevDay].itinerary.map((block, i) => (
-                  <ItineraryItem key={i} block={block} hoveredActId={null} onHoverAct={noop} onLeaveAct={noop} acts={allData[prevDay].acts} />
+                  <ItineraryItem key={block.actId ?? `${block.type}-${block.start ?? i}`} block={block} hoveredActId={null} onHoverAct={noop} onLeaveAct={noop} acts={allData[prevDay].acts} />
                 ))}
               </div>
               <div className="plan-page" ref={itineraryScrollRef}>
                 {itinerary.map((block, i) => (
-                  <ItineraryItem key={i} block={block} hoveredActId={hoveredActId} onHoverAct={onHoverAct} onLeaveAct={onLeaveAct} acts={acts} />
+                  <ItineraryItem key={block.actId ?? `${block.type}-${block.start ?? i}`} block={block} hoveredActId={hoveredActId} onHoverAct={onHoverAct} onLeaveAct={onLeaveAct} acts={acts} />
                 ))}
                 {nowLineTop !== null && (
                   <div className="now-indicator" style={{ top: `${nowLineTop}px` }}>
@@ -747,7 +747,7 @@ export default function App() {
               </div>
               <div className="plan-page">
                 {nextDay && allData[nextDay].itinerary.map((block, i) => (
-                  <ItineraryItem key={i} block={block} hoveredActId={null} onHoverAct={noop} onLeaveAct={noop} acts={allData[nextDay].acts} />
+                  <ItineraryItem key={block.actId ?? `${block.type}-${block.start ?? i}`} block={block} hoveredActId={null} onHoverAct={noop} onLeaveAct={noop} acts={allData[nextDay].acts} />
                 ))}
               </div>
             </div>

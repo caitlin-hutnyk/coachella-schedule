@@ -1,5 +1,5 @@
 import * as SelectPrimitive from '@radix-ui/react-select';
-import { ChevronDown, Check } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 
 export function Select({
   value,
@@ -25,9 +25,6 @@ export function Select({
           <SelectPrimitive.Viewport>
             {options.map(opt => (
               <SelectPrimitive.Item key={opt.value} value={opt.value} className="view-select-item">
-                <SelectPrimitive.ItemIndicator>
-                  <Check size={12} strokeWidth={2.5} />
-                </SelectPrimitive.ItemIndicator>
                 <SelectPrimitive.ItemText>{opt.label}</SelectPrimitive.ItemText>
               </SelectPrimitive.Item>
             ))}

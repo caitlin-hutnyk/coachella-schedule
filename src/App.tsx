@@ -50,10 +50,32 @@ function getLATime(): { dateStr: string; minutes: number } {
   const get = (type: string) => parts.find(p => p.type === type)?.value ?? '0';
   const h = parseInt(get('hour'));
   const m = parseInt(get('minute'));
+
+  // Before 1 AM counts as the previous festival day (nights run past midnight)
+  if (h < 1) {
+    const prevParts = new Intl.DateTimeFormat('en-US', {
+      timeZone: 'America/Los_Angeles',
+      year: 'numeric', month: '2-digit', day: '2-digit',
+    }).formatToParts(new Date(now.getTime() - 60 * 60 * 1000));
+    const pGet = (type: string) => prevParts.find(p => p.type === type)?.value ?? '0';
+    return {
+      dateStr: `${pGet('year')}-${pGet('month')}-${pGet('day')}`,
+      minutes: 24 * 60 + m,
+    };
+  }
+
   return {
     dateStr: `${get('year')}-${get('month')}-${get('day')}`,
     minutes: h * 60 + m,
   };
+}
+
+function getDefaultDay(): Day {
+  const { dateStr } = getLATime();
+  if (dateStr === DAY_DATES.saturday) return 'saturday';
+  if (dateStr === DAY_DATES.sunday) return 'sunday';
+  if (dateStr === DAY_DATES.friday) return 'friday';
+  return 'friday';
 }
 
 function ActBlock({ act, rangeStart, highlighted, dimmed, onHover, onLeave, hourPx }: {
@@ -310,7 +332,7 @@ function ItineraryItem({ block, hoveredActId, onHoverAct, onLeaveAct, acts }: {
 }
 
 export default function App() {
-  const [day, setDay] = useState<Day>('friday');
+  const [day, setDay] = useState<Day>(getDefaultDay);
   const [hoveredActId, setHoveredActId] = useState<string | null>(null);
   const [mobileView, setMobileView] = useState<'grid' | 'schedule' | 'map'>('schedule');
   const [showMap, setShowMap] = useState(false);
